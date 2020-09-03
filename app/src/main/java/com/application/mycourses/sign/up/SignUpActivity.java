@@ -187,7 +187,7 @@ public class SignUpActivity extends AppCompatActivity {
                         emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.sign_in) + "\n \n");
 
                         if (emailIntent.resolveActivity(this.getPackageManager()) != null) {
-                            this.startActivity(emailIntent);
+                            startActivity(emailIntent);
                         }
                     });
             AlertDialog alertDialog = alertDialogBuilder.create();

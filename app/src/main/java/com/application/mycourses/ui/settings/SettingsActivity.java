@@ -101,7 +101,7 @@ public class SettingsActivity extends AppCompatActivity {
                         emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.action_settings));
 
                         if (emailIntent.resolveActivity(this.getPackageManager()) != null) {
-                            this.startActivity(emailIntent);
+                            startActivity(emailIntent);
                         }
                     });
             AlertDialog alertDialog = alertDialogBuilder.create();

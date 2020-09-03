@@ -13,7 +13,7 @@ public class FabRotate {
                         super.onAnimationEnd(animation);
                     }
                 })
-                .rotation(rotate ? 135f : 0f);
+                .rotation(rotate ? 180f : 0f);
         return rotate;
     }
 }

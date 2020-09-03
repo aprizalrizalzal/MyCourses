@@ -209,7 +209,7 @@ public class ReAuthenticateActivity extends AppCompatActivity {
                         emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.verification) + "\n \n");
 
                         if (emailIntent.resolveActivity(this.getPackageManager()) != null) {
-                            this.startActivity(emailIntent);
+                            startActivity(emailIntent);
                         }
                     });
             AlertDialog alertDialog = alertDialogBuilder.create();

@@ -405,7 +405,7 @@ public class ProfileActivity extends AppCompatActivity {
                         emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.sign_in) + "\n \n");
 
                         if (emailIntent.resolveActivity(this.getPackageManager()) != null) {
-                            this.startActivity(emailIntent);
+                            startActivity(emailIntent);
                         }
                     });
             androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();

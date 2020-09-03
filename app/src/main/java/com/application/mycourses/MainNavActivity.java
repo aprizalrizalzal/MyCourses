@@ -1,7 +1,6 @@
 package com.application.mycourses;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -11,20 +10,16 @@ import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.application.mycourses.model.ModelUser;
-import com.application.mycourses.sign.in.SignInActivity;
 import com.application.mycourses.ui.home.HomeFragment;
 import com.application.mycourses.ui.main.courses.CreateActivity;
 import com.application.mycourses.ui.main.courses.JoinActivity;
 import com.application.mycourses.ui.main.edit.ProfileActivity;
 import com.application.mycourses.ui.settings.SettingsActivity;
-import com.application.mycourses.ui.utils.LoadingProgress;
-
 import com.application.mycourses.ui.utils.FabRotate;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -38,11 +33,6 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -65,14 +55,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainNavActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private DrawerLayout drawer;
-    private FloatingActionButton imgBtnHelp,imgBtnCreate,imgBtnJoin;
+    private FloatingActionButton fab,imgBtnHelp,imgBtnCreate,imgBtnJoin;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firebaseFirestore;
     private TextView appBarMain;
     private CircleImageView imgViewUserNav;
     private TextView userNameNav, emailNav;
     private String userId;
-    private LoadingProgress loadingProgress;
     private boolean doubleBackToExitPressedOnce = false;
     private boolean isFabRotate = false;
     private boolean isFabOpen = false;
@@ -87,7 +76,6 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
         setSupportActionBar(toolbar);
 
         appBarMain=findViewById(R.id.tvAppBarMain);
-        loadingProgress = new LoadingProgress(this);
 
         firebaseAuth=FirebaseAuth.getInstance();
         FirebaseUser firebaseUser=firebaseAuth.getCurrentUser();
@@ -99,10 +87,10 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
+        fab = findViewById(R.id.fab);
         imgBtnCreate = findViewById(R.id.fabCreate);
         imgBtnJoin = findViewById(R.id.fabJoin);
         imgBtnHelp = findViewById(R.id.fabHelp);
-        FloatingActionButton fab = findViewById(R.id.fab);
 
         fab.setOnClickListener(view -> {
             if (!isFabOpen){
@@ -120,20 +108,21 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
                     .setMessage(R.string.help_or_questions)
                     .setCancelable(true)
                     .setNeutralButton(R.string.yes, (dialog, id) -> {
+                        fab.hide();
                         Intent emailIntent = new Intent(Intent.ACTION_SEND);
                         emailIntent.setType("text/plain");
                         emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"aprizal040498@gmail.com"});
                         emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
                         emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.sign_in) + "\n \n");
+                        closeFab();
 
                         if (emailIntent.resolveActivity(this.getPackageManager()) != null) {
-                            this.startActivity(emailIntent);
+                            startActivity(emailIntent);
                         }
                     });
             AlertDialog alertDialog = alertDialogBuilder.create();
             Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(getDrawable(R.drawable.bg_costume));
             alertDialog.show();
-            closeFab();
         });
 
         imgBtnCreate.setOnClickListener(view -> {
@@ -251,89 +240,11 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
         imgBtnJoin.show();
     }
 
-    private void searchClass(EditText edtIdClass, Dialog dialogJoin) {
-        if (!validateIdClass(edtIdClass)){
-            return;
-        }
-        dialogJoin.cancel();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        if (firebaseUser != null) {
-            String idClass = edtIdClass.getText().toString();
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Class").child(idClass);
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @SuppressLint("UseCompatLoadingForDrawables")
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainNavActivity.this);
-                        alertDialogBuilder
-                                .setTitle(R.string.info)
-                                .setMessage(getString(R.string.id_class_found))
-                                .setCancelable(false)
-                                .setNeutralButton(R.string.yes, (dialogInterface, i) -> joinClass(idClass,firebaseUser, firebaseFirestore))
-                                .setNegativeButton(R.string.no,(dialogInterface, i) -> dialogInterface.cancel());
-                        AlertDialog alertDialog = alertDialogBuilder.create();
-                        Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(getDrawable(R.drawable.bg_costume));
-                        alertDialog.show();
-                    } else {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainNavActivity.this);
-                        alertDialogBuilder
-                                .setTitle(R.string.info)
-                                .setMessage(getString(R.string.id_class_not_found))
-                                .setCancelable(false)
-                                .setNegativeButton(R.string.no,(dialogInterface, i) -> dialogInterface.cancel());
-                        AlertDialog alertDialog = alertDialogBuilder.create();
-                        Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(getDrawable(R.drawable.bg_costume));
-                        alertDialog.show();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
-
-    }
-
-    private void joinClass(String idClass, FirebaseUser firebaseUser, FirebaseFirestore firebaseFirestore) {
-        loadingProgress.startLoadingProgress();
-        if (firebaseUser != null) {
-            userId = firebaseUser.getUid();
-            Map<String,Object> map = new HashMap<>();
-            map.put("idClass",idClass);
-            map.put("userId",userId);
-
-            firebaseFirestore.collection(getString(R.string.app_name)).document(userId).collection("Join").document(idClass).set(map)
-                    .addOnSuccessListener(this, aVoid -> {
-                        loadingProgress.dismissLoadingProgress();
-
-                    })
-                    .addOnFailureListener(this, e -> {
-                        loadingProgress.dismissLoadingProgress();
-
-                    });
-        }
-    }
-
     private boolean haveConnection() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         assert cm != null;
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
-    private boolean validateIdClass(EditText edtIdClass){
-        String idClass = edtIdClass.getText().toString();
-        if (idClass.isEmpty()){
-            edtIdClass.setError(getString(R.string.field_not_empty));
-            return false;
-        } else {
-            edtIdClass.setError(null);
-            return true;
-        }
     }
 
     private void userOnline(FirebaseAuth firebaseAuth, FirebaseFirestore firebaseFirestore) {
@@ -406,6 +317,7 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
     @Override
     protected void onResume() {
         userOnline(firebaseAuth, firebaseFirestore);
+        fab.show();
         super.onResume();
     }
 
