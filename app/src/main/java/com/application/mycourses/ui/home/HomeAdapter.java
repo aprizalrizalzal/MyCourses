@@ -1,5 +1,6 @@
 package com.application.mycourses.ui.home;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,21 +13,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.application.mycourses.MainNavActivity;
 import com.application.mycourses.R;
 import com.application.mycourses.model.ModelHome;
 import com.application.mycourses.ui.home.activity.SemesterActivity;
-import com.application.mycourses.ui.main.edit.EditActivity;
+import com.application.mycourses.ui.main.edit.CoursesActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -53,10 +56,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         if (viewType == CLASS_LEFT){
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.items_home, parent, false);
             return new HomeAdapter.ViewHolder(view);
-        } else {
+        } else if (viewType == CLASS_RIGHT) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.items_home_join, parent, false);
             return new HomeAdapter.ViewHolder(view);
         }
+        return createViewHolder(parent, viewType);
     }
 
     @Override
@@ -87,7 +91,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         final FirebaseUser firebaseUser;
         final FirebaseDatabase database;
         final ImageButton imgBtnSettings;
-        /*final ImageButton imgBtnLeft;*/
         final CircleImageView imgViewHome;
         final TextView titleCourses,titleUniversity,titleFaculty,titleStudy,titleSemester;
         public ViewHolder(@NonNull View itemView) {
@@ -97,7 +100,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             database = FirebaseDatabase.getInstance();
             titleCourses = itemView.findViewById(R.id.tv_item_courses);
             imgBtnSettings = itemView.findViewById(R.id.imgBtnSettings);
-            /*imgBtnLeft = itemView.findViewById(R.id.imgBtnLeft);*/
             imgViewHome = itemView.findViewById(R.id.img_view_home);
             titleUniversity = itemView.findViewById(R.id.tv_item_university);
             titleFaculty = itemView.findViewById(R.id.tv_item_faculty);
@@ -105,6 +107,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             titleSemester = itemView.findViewById(R.id.tv_item_semester);
         }
 
+        @SuppressLint("UseCompatLoadingForDrawables")
         public void bind(Context contextHome, ModelHome modelHome, HomeFragmentCallback callback) {
             if (modelHome.getUrlCover().equals("urlCover")){
                 Glide.with(contextHome)
@@ -129,7 +132,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                             editIdClass(modelHome,firebaseUser);
                             return true;
                         case R.id.action_delete:
-                            deleteIdClass(database,modelHome,firebaseUser);
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(contextHome);
+                            alertDialogBuilder
+                                    .setTitle(contextHome.getString(R.string.delete))
+                                    .setMessage(contextHome.getString(R.string.delete_your_class,modelHome.getCourses()))
+                                    .setCancelable(false)
+                                    .setPositiveButton(contextHome.getString(R.string.yes), (dialog, id) -> {
+                                        deleteIdClass(database,modelHome,firebaseUser);
+                                    })
+                                    .setNegativeButton(R.string.no, (dialog, id) -> dialog.cancel());
+                            AlertDialog alertDialog = alertDialogBuilder.create();
+                            Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(contextHome.getDrawable(R.drawable.bg_costume));
+                            alertDialog.show();
                             return true;
                         default:
                             return false;
@@ -138,24 +152,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 popup.inflate(R.menu.home_items);
                 popup.show();
             });
-
-            /*imgBtnLeft.setOnClickListener(view -> {
-                PopupMenu popup = new PopupMenu(contextHome,view);
-                popup.setOnMenuItemClickListener(menuItem -> {
-                    switch (menuItem.getItemId()) {
-                        case R.id.action_share:
-                            shareIdClass(modelHome,callback);
-                            return true;
-                        case R.id.action_left:
-                            LeftIdClass(database,firebaseUser);
-                            return true;
-                        default:
-                            return false;
-                    }
-                });
-                popup.inflate(R.menu.home_items_left);
-                popup.show();
-            });*/
 
             titleCourses.setText(modelHome.getCourses());
             titleUniversity.setText(modelHome.getUniversity());
@@ -174,6 +170,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 contextHome.startActivity(intent);
                 Activity activity = (Activity) contextHome;
                 activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                activity.finish();
             });
         }
 
@@ -187,7 +184,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
         private void editIdClass(ModelHome modelHome, FirebaseUser firebaseUser) {
             if (firebaseUser!=null){
-                Intent intent = new Intent(contextHome, EditActivity.class);
+                Intent intent = new Intent(contextHome, CoursesActivity.class);
                 intent.putExtra("urlCover",modelHome.getUrlCover());
                 intent.putExtra("university",modelHome.getUniversity());
                 intent.putExtra("faculty",modelHome.getFaculty());
@@ -197,15 +194,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 contextHome.startActivity(intent);
                 Activity activity = (Activity) contextHome;
                 activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                activity.finish();
             }
         }
         private void deleteIdClass(FirebaseDatabase database, ModelHome modelHome, FirebaseUser firebaseUser) {
             String userId = firebaseUser.getUid();
-            database.getReference("Class").child(userId).child(modelHome.getCourses()).removeValue().addOnCompleteListener(task -> {
+            database.getReference(contextHome.getString(R.string.name_class)).child(userId).child(modelHome.getCourses()).removeValue().addOnCompleteListener(task -> {
               if (task.isSuccessful()){
-                  Toast.makeText(contextHome,R.string.delete_class,Toast.LENGTH_SHORT).show();
+                  Intent intent = new Intent(contextHome, MainNavActivity.class);
+                  Toast.makeText(contextHome,contextHome.getString(R.string.delete_class),Toast.LENGTH_SHORT).show();
+                  contextHome.startActivity(intent);
+                  Activity activity = (Activity) contextHome;
+                  activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                  activity.finish();
               } else {
-                  Toast.makeText(contextHome,R.string.delete_class_failed,Toast.LENGTH_SHORT).show();
+                  Toast.makeText(contextHome,contextHome.getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
               }});
         }
     }

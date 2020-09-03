@@ -144,4 +144,6 @@
     <string name="add_material">Add Material</string>
     <string name="join">Join</string>
     <string name="action_exit">Exit</string>
+    <string name="delete">Delete</string>
+    <string name="delete_your_class">Are you going to remove the %s class. If sure choose yes</string>
 </resources>

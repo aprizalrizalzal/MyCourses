@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.application.mycourses.MainNavActivity;
 import com.application.mycourses.R;
 import com.application.mycourses.ui.home.activity.tab.MaterialFragment;
 import com.application.mycourses.ui.home.activity.tab.MemberFragment;
@@ -116,8 +117,11 @@ public class SemesterActivity extends AppCompatActivity {
     }
 
     @Override
-    public void finish() {
-        super.finish();
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(SemesterActivity.this, MainNavActivity.class));
         overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+        finish();
+
     }
 }

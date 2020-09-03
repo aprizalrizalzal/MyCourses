@@ -302,9 +302,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         startActivity(new Intent(SettingsActivity.this, MainNavActivity.class));
         overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
         finish();
-        super.onBackPressed();
     }
 }

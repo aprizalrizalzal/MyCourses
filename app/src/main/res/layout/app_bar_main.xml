@@ -50,34 +50,42 @@
     <include layout="@layout/content_main" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabHelp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"
+        app:fabSize="mini"
+        app:srcCompat= "@drawable/ic_baseline_help_outline" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabCreate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:enabled="false"
-        app:srcCompat="@drawable/ic_baseline_create"
-        app:maxImageSize="24dp"
-        android:contentDescription="@string/create" />
+        android:layout_margin="25dp"
+        app:fabSize="mini"
+        app:srcCompat= "@drawable/ic_baseline_create"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabJoin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:enabled="false"
-        app:srcCompat="@drawable/ic_baseline_search"
-        app:maxImageSize="36dp"
-        android:contentDescription="@string/action_search" />
+        android:layout_margin="20dp"
+        app:fabSize="mini"
+        app:srcCompat= "@drawable/ic_baseline_search"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
+        android:backgroundTint="@color/colorPrimary"
         android:layout_gravity="bottom|end"
-        app:maxImageSize="48dp"
+        app:borderWidth="2dp"
+        app:maxImageSize="36dp"
+        app:fabSize="normal"
         app:srcCompat="@drawable/ic_baseline_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -44,6 +44,7 @@
         tools:ignore="UselessParent">
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_click_btn"
@@ -51,8 +52,10 @@
             android:paddingVertical="@dimen/activity_vertical_padding"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/img_view_home"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
             <TextView
                 android:id="@+id/tv_item_university"
@@ -70,7 +73,7 @@
 
             <TextView
                 android:id="@+id/tv_item_faculty"
-                android:layout_width="match_parent"
+                android:layout_width="82dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/activity_vertical_margin"
                 android:layout_marginVertical="4dp"

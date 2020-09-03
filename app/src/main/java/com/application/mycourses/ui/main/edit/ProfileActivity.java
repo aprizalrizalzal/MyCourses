@@ -1,4 +1,4 @@
-package com.application.mycourses.ui.main.profile;
+package com.application.mycourses.ui.main.edit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,7 +35,6 @@ import com.application.mycourses.MainNavActivity;
 import com.application.mycourses.R;
 import com.application.mycourses.model.ModelUser;
 import com.application.mycourses.sign.in.SignInActivity;
-import com.application.mycourses.ui.settings.SettingsActivity;
 import com.application.mycourses.ui.utils.LoadingProgress;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -471,10 +470,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         startActivity(new Intent(ProfileActivity.this, MainNavActivity.class));
         overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
         finish();
-        super.onBackPressed();
 
     }
 }

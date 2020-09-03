@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -116,11 +117,21 @@ public class CreateActivity extends AppCompatActivity {
             loadingProgress.startLoadingProgress();
 
             String userId = firebaseUser.getUid();
+            String saveCurrencyDate, saveCurrencyTime;
             university = edtUni.getText().toString().toUpperCase();
             faculty = edtFac.getText().toString().toUpperCase();
             study = edtStud.getText().toString().toUpperCase();
             semester = edtSem.getText().toString();
             courses = edtCour.getText().toString().toUpperCase();
+
+            Calendar calendar = Calendar.getInstance();
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy");
+            saveCurrencyDate = dateFormat.format(calendar.getTime());
+
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            saveCurrencyTime = timeFormat.format(calendar.getTime());
 
             Map<String, Object> map = new HashMap<>();
             map.put("courses",courses);
@@ -130,6 +141,7 @@ public class CreateActivity extends AppCompatActivity {
             map.put("study",study);
             map.put("university",university);
             map.put("urlCover","urlCover");
+            map.put("dateCreated", String.format("%s at %s",saveCurrencyDate,saveCurrencyTime));
 
             database.getReference("Class").child(userId).child(courses).setValue(map).addOnCompleteListener(this, task -> {
                 if (task.isSuccessful()){
@@ -240,8 +252,10 @@ public class CreateActivity extends AppCompatActivity {
     }
 
     @Override
-    public void finish() {
-        super.finish();
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, MainNavActivity.class));
         overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+        finish();
     }
 }

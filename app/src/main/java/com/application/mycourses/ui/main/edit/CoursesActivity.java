@@ -45,6 +45,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +53,7 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class EditActivity extends AppCompatActivity {
+public class CoursesActivity extends AppCompatActivity {
 
     private FirebaseUser firebaseUser;
     private FirebaseDatabase database;
@@ -128,10 +129,10 @@ public class EditActivity extends AppCompatActivity {
         }
 
         btnAddCover.setOnClickListener(view -> {
-            if (ContextCompat.checkSelfPermission(EditActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            if (ContextCompat.checkSelfPermission(CoursesActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
                 selectImage();
             }else {
-                ActivityCompat.requestPermissions(EditActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},IMAGE_REQUEST);
+                ActivityCompat.requestPermissions(CoursesActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},IMAGE_REQUEST);
             }
         });
 
@@ -181,11 +182,22 @@ public class EditActivity extends AppCompatActivity {
         loadingProgress.startLoadingProgress();
 
         String userId = firebaseUser.getUid();
+        String saveCurrencyDate, saveCurrencyTime;
         university = edtUni.getText().toString().toUpperCase();
         faculty = edtFac.getText().toString().toUpperCase();
         study = edtStud.getText().toString().toUpperCase();
         courses = edtCour.getText().toString().toUpperCase();
         semester = edtSem.getText().toString();
+
+        Calendar calendar = Calendar.getInstance();
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy");
+        saveCurrencyDate = dateFormat.format(calendar.getTime());
+
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        saveCurrencyTime = timeFormat.format(calendar.getTime());
+
 
         Map<String, Object> map = new HashMap<>();
         map.put("courses",courses);
@@ -195,14 +207,15 @@ public class EditActivity extends AppCompatActivity {
         map.put("study",study);
         map.put("university",university);
         map.put("urlCover","urlCover");
+        map.put("lastUpdate", String.format("%s at %s",saveCurrencyDate,saveCurrencyTime));
 
-        database.getReference().child(userId).child(courses).setValue(map).addOnCompleteListener(this, task -> {
+        database.getReference(getString(R.string.name_class)).child(userId).child(courses).updateChildren(map).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()){
-                Toast.makeText(EditActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
+                Toast.makeText(CoursesActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
                 loadingProgress.dismissLoadingProgress();
                 uploadImage(firebaseUser,database,storageReference,courses);
             }else {
-                Toast.makeText(EditActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
+                Toast.makeText(CoursesActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
                 loadingProgress.dismissLoadingProgress();
             }
         });
@@ -227,7 +240,7 @@ public class EditActivity extends AppCompatActivity {
         if (requestCode == IMAGE_REQUEST && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             selectImage();
         } else {
-            Toast.makeText(EditActivity.this, R.string.allow_permission_storage, Toast.LENGTH_SHORT).show();
+            Toast.makeText(CoursesActivity.this, R.string.allow_permission_storage, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -256,23 +269,23 @@ public class EditActivity extends AppCompatActivity {
 
                     database.getReference(getString(R.string.name_class)).child(userId).child(courses).updateChildren(map).addOnCompleteListener(this, taskUpdate -> {
                         if (taskUpdate.isSuccessful()){
-                            Toast.makeText(EditActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(EditActivity.this, MainNavActivity.class));
+                            Toast.makeText(CoursesActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(CoursesActivity.this, MainNavActivity.class));
                             overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
                             finish();
                         } else {
                             loadingProgress.dismissLoadingProgress();
-                            Toast.makeText(EditActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
                         }});
                 } else {
                     loadingProgress.dismissLoadingProgress();
-                    Toast.makeText(EditActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
                 } });
 
         } else {
             loadingProgress.dismissLoadingProgress();
             Snackbar.make(imgCover, getString(R.string.no_image_upload), BaseTransientBottomBar.LENGTH_INDEFINITE ).setAction(getString(R.string.yes),view -> {
-                startActivity(new Intent(EditActivity.this, MainNavActivity.class));
+                startActivity(new Intent(CoursesActivity.this, MainNavActivity.class));
                 overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
                 finish();
             }).show();
@@ -303,7 +316,7 @@ public class EditActivity extends AppCompatActivity {
         itemSetting.setVisible(false);
         MenuItem itemHelp = menu.findItem(R.id.action_help);
         itemHelp.setOnMenuItemClickListener(menuItem -> {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(EditActivity.this);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CoursesActivity.this);
             alertDialogBuilder
                     .setTitle(R.string.action_help)
                     .setMessage(R.string.help_or_questions)
@@ -373,7 +386,9 @@ public class EditActivity extends AppCompatActivity {
             edtSem.setError(null);
             return true;
         }
-    }private boolean validateCour(){
+    }
+
+    private boolean validateCour(){
         courses = edtCour.getText().toString().toUpperCase();
         if (courses.isEmpty()){
             edtCour.setError(getString(R.string.field_not_empty));
@@ -382,5 +397,14 @@ public class EditActivity extends AppCompatActivity {
             edtCour.setError(null);
             return true;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(CoursesActivity.this, MainNavActivity.class));
+        overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+        finish();
+
     }
 }

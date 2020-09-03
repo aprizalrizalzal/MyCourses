@@ -17,14 +17,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.application.mycourses.model.ModelUser;
+import com.application.mycourses.sign.in.SignInActivity;
 import com.application.mycourses.ui.home.HomeFragment;
 import com.application.mycourses.ui.main.courses.CreateActivity;
 import com.application.mycourses.ui.main.courses.JoinActivity;
-import com.application.mycourses.ui.main.profile.ProfileActivity;
+import com.application.mycourses.ui.main.edit.ProfileActivity;
 import com.application.mycourses.ui.settings.SettingsActivity;
 import com.application.mycourses.ui.utils.LoadingProgress;
+
+import com.application.mycourses.ui.utils.FabRotate;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -61,7 +65,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainNavActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private DrawerLayout drawer;
-    private FloatingActionButton imgBtnCreate,imgBtnJoin;
+    private FloatingActionButton imgBtnHelp,imgBtnCreate,imgBtnJoin;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firebaseFirestore;
     private TextView appBarMain;
@@ -70,6 +74,7 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
     private String userId;
     private LoadingProgress loadingProgress;
     private boolean doubleBackToExitPressedOnce = false;
+    private boolean isFabRotate = false;
     private boolean isFabOpen = false;
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -96,8 +101,8 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
 
         imgBtnCreate = findViewById(R.id.fabCreate);
         imgBtnJoin = findViewById(R.id.fabJoin);
+        imgBtnHelp = findViewById(R.id.fabHelp);
         FloatingActionButton fab = findViewById(R.id.fab);
-
 
         fab.setOnClickListener(view -> {
             if (!isFabOpen){
@@ -105,12 +110,40 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
             }else {
                 closeFab();
             }
+            isFabRotate = FabRotate.rotateFab(view, !isFabRotate);
+        });
+
+        imgBtnHelp.setOnClickListener(view -> {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainNavActivity.this);
+            alertDialogBuilder
+                    .setTitle(R.string.action_help)
+                    .setMessage(R.string.help_or_questions)
+                    .setCancelable(true)
+                    .setNeutralButton(R.string.yes, (dialog, id) -> {
+                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                        emailIntent.setType("text/plain");
+                        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"aprizal040498@gmail.com"});
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+                        emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.sign_in) + "\n \n");
+
+                        if (emailIntent.resolveActivity(this.getPackageManager()) != null) {
+                            this.startActivity(emailIntent);
+                        }
+                    });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(getDrawable(R.drawable.bg_costume));
+            alertDialog.show();
+            closeFab();
         });
 
         imgBtnCreate.setOnClickListener(view -> {
             if (haveConnection()){
                 startActivity(new Intent(this, CreateActivity.class));
                 overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                isFabRotate = FabRotate.rotateFab(view, !isFabRotate);
+                fab.hide();
+                closeFab();
+                finish();
             } else {
                 Snackbar.make(view, getString(R.string.not_have_connection), BaseTransientBottomBar.LENGTH_SHORT ).show();
             }
@@ -120,6 +153,10 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
             if (haveConnection()){
                 startActivity(new Intent(this, JoinActivity.class));
                 overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                isFabRotate = FabRotate.rotateFab(view, !isFabRotate);
+                fab.hide();
+                closeFab();
+                finish();
             } else {
                 Snackbar.make(view, getString(R.string.not_have_connection), BaseTransientBottomBar.LENGTH_SHORT ).show();
             }
@@ -194,18 +231,24 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
 
     private void closeFab() {
         isFabOpen = false;
+        imgBtnHelp.animate().translationY(0);
+        imgBtnHelp.hide();
         imgBtnCreate.animate().translationY(0);
-        imgBtnCreate.setEnabled(false);
-        imgBtnJoin.animate().translationY(0);
-        imgBtnJoin.setEnabled(false);
+        imgBtnCreate.animate().translationX(0);
+        imgBtnCreate.hide();
+        imgBtnJoin.animate().translationX(0);
+        imgBtnJoin.hide();
     }
 
     private void showFab() {
         isFabOpen = true;
+        imgBtnHelp.animate().translationY(-getResources().getDimension(R.dimen.fab_animate_i));
+        imgBtnHelp.show();
         imgBtnCreate.animate().translationY(-getResources().getDimension(R.dimen.fab_animate_ii));
-        imgBtnCreate.setEnabled(true);
-        imgBtnJoin.animate().translationY(-getResources().getDimension(R.dimen.fab_animate_i));
-        imgBtnJoin.setEnabled(true);
+        imgBtnCreate.animate().translationX(-getResources().getDimension(R.dimen.fab_animate_ii));
+        imgBtnCreate.show();
+        imgBtnJoin.animate().translationX(-getResources().getDimension(R.dimen.fab_animate_i));
+        imgBtnJoin.show();
     }
 
     private void searchClass(EditText edtIdClass, Dialog dialogJoin) {

@@ -19,7 +19,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ui.main.courses.JoinActivity"></activity>
         <activity
-            android:name=".ui.main.edit.EditActivity"
+            android:name=".ui.main.edit.CoursesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.home.activity.SemesterActivity"
@@ -28,7 +28,7 @@
             android:name=".ui.main.courses.CreateActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.main.profile.ProfileActivity"
+            android:name=".ui.main.edit.ProfileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.settings.SettingsActivity"
