@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.profile.ProfileActivity">
+
+    <include
+        layout="@layout/app_bar"/>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:background="@drawable/bg_click_btn"
+                    android:elevation="2dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvRun"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:ellipsize="marquee"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:maxLines="1"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textColor="?android:attr/colorForeground"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="EllipsizeMaxLines,RtlCompat"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:text="@string/app_name" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgCover"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        app:civ_border_color="@color/colorAccent"
+                        app:civ_border_width="1dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvRun"
+                        tools:src="@tools:sample/avatars" />
+
+                    <ImageButton
+                        android:id="@+id/btnAddCover"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        style="@style/Widget.Design.FloatingActionButton"
+                        android:contentDescription="@string/name"
+                        android:src="@drawable/ic_baseline_add_a_photo"
+                        app:layout_constraintBottom_toBottomOf="@+id/imgCover"
+                        app:layout_constraintEnd_toEndOf="@+id/imgCover" />
+
+                    <ImageButton
+                        android:id="@+id/btnSaveCover"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        style="@style/Widget.Design.FloatingActionButton"
+                        android:contentDescription="@string/name"
+                        android:visibility="gone"
+                        android:src="@drawable/ic_baseline_save"
+                        app:layout_constraintBottom_toBottomOf="@+id/imgCover"
+                        app:layout_constraintEnd_toEndOf="@+id/imgCover" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/activity_vertical_padding"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="@+id/imgCover"
+                        app:layout_constraintEnd_toEndOf="@+id/tvRun"
+                        app:layout_constraintStart_toEndOf="@+id/imgCover"
+                        app:layout_constraintTop_toTopOf="@+id/imgCover">
+
+                        <EditText
+                            android:id="@+id/edtUserName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autofillHints="@string/name"
+                            android:drawableEnd="@drawable/ic_baseline_person"
+                            android:enabled="false"
+                            android:hint="@string/name"
+                            android:inputType="text"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:id="@+id/edtGender"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autofillHints="@string/name"
+                            android:drawableEnd="@drawable/ic_baseline_supervised_user_circle"
+                            android:enabled="false"
+                            android:hint="@string/gender"
+                            android:inputType="text"
+                            android:textSize="14sp" />
+
+
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:id="@+id/labeled"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_below="@id/linear"
+                    android:background="@drawable/bg_costume"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:elevation="2dp"
+                    android:layout_marginVertical="4dp"
+                    tools:ignore="UselessParent">
+
+                    <EditText
+                        android:id="@+id/edtBirth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="@string/name"
+                        android:drawableEnd="@drawable/ic_baseline_event"
+                        android:enabled="false"
+                        android:hint="@string/date_of_birth"
+                        android:inputType="date"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/edtNumberPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableEnd="@drawable/ic_baseline_call"
+                        android:enabled="false"
+                        android:inputType="phone"
+                        android:hint="@string/number_phone"
+                        android:textSize="14sp"
+                        android:autofillHints="@string/number_phone" />
+
+                    <EditText
+                        android:id="@+id/edtEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableEnd="@drawable/ic_baseline_email"
+                        android:enabled="false"
+                        android:inputType="textEmailAddress"
+                        android:hint="@string/email"
+                        android:textSize="14sp"
+                        android:autofillHints="@string/email" />
+
+                    <Button
+                        android:id="@+id/btnVerify"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/activity_horizontal_margin"
+                        android:background="@drawable/bg_click_btn"
+                        android:textSize="16sp"
+                        android:text="@string/verification"
+                        android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse" />
+
+                    <Button
+                        android:id="@+id/btnUpdate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/activity_horizontal_margin"
+                        android:background="@drawable/bg_click_btn"
+                        android:textSize="16sp"
+                        android:text="@string/update"
+                        android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
+                        android:visibility="gone"/>
+
+                    <Button
+                        android:id="@+id/btnSave"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/activity_horizontal_margin"
+                        android:background="@drawable/bg_click_btn"
+                        android:textSize="16sp"
+                        android:text="@string/save"
+                        android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
+                        android:visibility="gone"/>
+                </LinearLayout>
+            </RelativeLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

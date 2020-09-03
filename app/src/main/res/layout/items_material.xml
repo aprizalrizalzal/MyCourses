@@ -1,0 +1,90 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_click_btn"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/bg_click_btn"
+        android:elevation="2dp"
+        android:orientation="horizontal"
+        tools:ignore="UselessParent">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_view_home"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:elevation="2dp"
+            android:padding="@dimen/activity_vertical_margin"
+            app:civ_border_color="@android:color/white"
+            app:civ_border_overlay="true"
+            app:civ_border_width="1dp"
+            tools:src="@tools:sample/avatars" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_click_btn"
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/activity_vertical_padding">
+
+            <TextView
+                android:id="@+id/tv_item_university"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/activity_vertical_margin"
+                android:layout_marginVertical="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAlignment="center"
+                android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="@string/university" />
+
+            <TextView
+                android:id="@+id/tv_item_faculty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/activity_vertical_margin"
+                android:layout_marginVertical="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
+                android:textSize="14sp"
+                android:textStyle="bold|italic"
+                tools:text="@string/faculty" />
+
+            <TextView
+                android:id="@+id/tv_item_study_program"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/activity_vertical_margin"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
+                android:textSize="12sp"
+                android:textStyle="bold|italic"
+                tools:text="@string/prod" />
+
+            <TextView
+                android:id="@+id/tv_item_semester"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/activity_vertical_margin"
+                android:layout_marginVertical="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                tools:text="@string/semester" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,52 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <PreferenceCategory app:title="@string/account"
+        app:order="1">
+
+        <SwitchPreferenceCompat
+            app:key="@string/lock_account"
+            app:title="@string/lock_account"
+            app:icon="@drawable/ic_baseline_lock"
+            app:summaryOn="@string/yes"
+            app:summaryOff="@string/no"/>
+
+        <Preference
+            app:key="@string/delete_account"
+            app:title="@string/delete_account"
+            app:icon="@drawable/ic_baseline_delete" />
+
+        <Preference
+            app:key="@string/sign_out"
+            app:title="@string/sign_out"
+            app:icon="@drawable/ic_baseline_sign_out" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/display"
+        app:order="2">
+
+        <Preference
+            app:key="@string/language"
+            app:title="@string/language"
+            app:summary="@string/default_language"
+            app:icon="@drawable/ic_baseline_language"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/additional"
+        app:order="3">
+
+        <Preference
+            app:key="@string/review"
+            app:title="@string/review"
+            app:icon="@drawable/ic_baseline_rate_review" />
+
+        <Preference
+            app:key="@string/check_update"
+            app:title="@string/check_update"
+            tools:summary="@string/app_version"
+            app:icon="@drawable/ic_baseline_check_update" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

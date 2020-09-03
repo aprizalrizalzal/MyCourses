@@ -1,0 +1,147 @@
+<resources>
+    <string name="app_name" translatable="false">MyCourses</string>
+    <!-- Sample AdMob App ID: ca-app-pub-3940256099942544/6300978111 -->
+    <string name="your_ad_mod_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+
+    <string name="title_activity_splash" translatable="false">SplashActivity</string>
+    <string name="title_activity_sign_up" translatable="false">LoginActivity</string>
+    <string name="title_activity_sign_in" translatable="false">LoginActivity</string>
+
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="send">Send</string>
+    <string name="cek_email">Check Your Email, We Have Sent a Link To Reset Your Password</string>
+    <string name="forgot_password">Forgot Password ?</string>
+    <string name="terms_and_conditions">Terms And Conditions</string>
+    <string name="sign_up_in">Already Registered, Sign In Now</string>
+    <string name="sign_in_up">Not Registered, Sign Up Now</string>
+    <string name="field_not_empty">Can not be empty</string>
+    <string name="status">Status</string>
+    <string name="select">Select</string>
+    <string name="selectStatus">You have to Choose a Status</string>
+    <string name="not_have_connection">You don\'t have internet connection</string>
+    <string name="sign_in_failed">Sign In Failed, incorrect email or password</string>
+    <string name="title_activity_main_nav">MainNavActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_help">Help</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="email_failed">Your email is not registered yet</string>
+    <string name="auth_failed">Authentication Failed, Please Try Again</string>
+    <string name="data_failed">Failed to save data, please contact the developer</string>
+    <string name="not_valid_email">Email characters are incorrect</string>
+    <string name="not_valid_password">Password cannot be less than 6 characters</string>
+    <string name="not_equals_confirm">Confirm Incorrect Password</string>
+    <string name="owner">Owner</string>
+    <string name="member">Member</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="not_email_verified">Email has not been verified</string>
+    <string name="on_back">Press Again To Exit</string>
+    <string name="yes">Yes</string>
+    <string name="help_or_questions">For Help or Questions Related to Applications,<b><u><i>Please Contact the Developer</i></u></b></string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <string name="welcome">Good %s and enjoy your activities. Have a nice day</string>
+    <string name="morning">Morning</string>
+    <string name="afternoon">Afternoon</string>
+    <string name="night">Night</string>
+    <string name="verification">Verification</string>
+    <string name="no">No</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="verify_account">Account verification is successful</string>
+    <string name="next_delete_account">To continue Account verification is required</string>
+    <string name="confirm_delete_account">Account verification is required</string>
+    <string name="delete_auth_account">Delete Account Authentication Successfully</string>
+    <string name="delete_auth_account_failed">Delete Account Authentication Failed, Please contact the developer</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="lock_account">Lock Account</string>
+    <string name="display">Display</string>
+    <string name="language">Language</string>
+    <string name="default_language">English</string>
+    <string name="additional">Additional</string>
+    <string name="review">Review</string>
+    <string name="check_update">Check Update</string>
+    <string name="app_version">App Version</string>
+    <string name="account">Account</string>
+    <string name="beta">Application %s Still Under Development</string>
+    <string name="settingLanguage">To set Language, you must make Display to the System \n\n<u>Open Settings> General Management> Language and Input> Language</u></string>
+    <string name="save">Save</string>
+    <string name="update">Update</string>
+    <string name="prod">Study Program</string>
+    <string name="num_id_class">Number Id Class</string>
+    <string name="name">Name</string>
+    <string name="number_phone">Number Phone</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="gender">Gender</string>
+    <string name="send_verify">The verification link for Email %s has been sent successfully.</string>
+    <string name="send_verify_failed">The verification link for Email %s failed to send.</string>
+    <string name="update_failed">Data Failed to update, try again</string>
+    <string name="data_update">Data updated successfully</string>
+    <string name="update_picture">Picture updated successfully</string>
+    <string name="update_picture_failed">Failed to update Picture, try again</string>
+    <string name="no_image_upload">No image uploaded</string>
+    <string name="upload_in_process">Upload in Process</string>
+    <string name="allow_permission_storage">Please Allow, To Open Storage</string>
+    <string name="sign_in_successfully">Sign In Successfully</string>
+    <string name="sign_up_successfully">Sign Up Successfully</string>
+    <string name="sign_in_with_google">Sign In With Google</string>
+    <string name="update_your_profile">Your profile is not complete, please complete it</string>
+    <string name="create">Create</string>
+    <string name="study_program">Study Program</string>
+    <string name="semester">Semester</string>
+    <string name="courses">Courses</string>
+    <string name="faculty">Faculty</string>
+    <string name="university">University</string>
+    <string name="id_class">Id Class</string>
+    <string name="search_class">If you wish to join the Class, Please enter the correct class ID</string>
+    <string name="num_id_class_failed">You are not registered in the class id or the class id number you entered is wrong</string>
+    <string name="your_class">Class Created</string>
+    <string name="join_class">Classes That Are Followed</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_share">Share</string>
+    <string name="edit">Edit</string>
+    <string name="delete_class">Delete Class successfully</string>
+    <string name="delete_class_failed">Your Delete Class Failed</string>
+    <string name="wait">Wait</string>
+    <string name="on_share">Share Now</string>
+    <string name="share_text">%s is a Class Id to enter the %s class</string>
+    <string name="replace_it">Data on %s subjects already exist. Do you want to replace it?</string>
+    <string name="create_new">You will create an %s class?</string>
+    <string name="info">Information!</string>
+    <string name="id_class_found">Class id found, are you sure you want to join?</string>
+    <string name="id_class_not_found">Class ID not found, try again and check the id you entered?</string>
+    <string name="retry">Retry</string>
+    <string name="name_class">Class</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="material">Material</string>
+    <string name="assignments">Assignments</string>
+    <string name="add_material">Add Material</string>
+    <string name="join">Join</string>
+    <string name="action_exit">Exit</string>
+</resources>

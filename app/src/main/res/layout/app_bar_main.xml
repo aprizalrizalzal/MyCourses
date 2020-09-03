@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainNavActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+            <TextView
+                android:id="@+id/tvAppBarMain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="@string/app_name"
+                android:scrollHorizontally="true"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:textColor="?android:attr/colorForeground"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:focusable="true"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:focusableInTouchMode="true"
+                tools:ignore="EllipsizeMaxLines"
+                android:textAlignment="center"/>
+
+        </androidx.appcompat.widget.Toolbar>
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adViewAppBarMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:adSize="FULL_BANNER"
+            app:adUnitId="@string/your_ad_mod_id"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <include layout="@layout/content_main" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabCreate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:enabled="false"
+        app:srcCompat="@drawable/ic_baseline_create"
+        app:maxImageSize="24dp"
+        android:contentDescription="@string/create" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabJoin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:enabled="false"
+        app:srcCompat="@drawable/ic_baseline_search"
+        app:maxImageSize="36dp"
+        android:contentDescription="@string/action_search" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_gravity="bottom|end"
+        app:maxImageSize="48dp"
+        app:srcCompat="@drawable/ic_baseline_add" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

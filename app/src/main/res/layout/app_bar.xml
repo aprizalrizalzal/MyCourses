@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.appbar.AppBarLayout
+    android:id="@+id/appBarLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:theme="@style/AppTheme.AppBarOverlay"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgAppBar"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:contentDescription="@string/app_name"
+            android:scaleType="centerCrop"
+            tools:src="@mipmap/ic_launcher_round" />
+
+        <TextView
+        android:id="@+id/tvAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="@string/app_name"
+        android:scrollHorizontally="true"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:textColor="?android:attr/colorForeground"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:focusable="true"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:focusableInTouchMode="true"
+        tools:ignore="EllipsizeMaxLines"
+        android:textAlignment="center"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adViewAppBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:adSize="FULL_BANNER"
+        app:adUnitId="@string/your_ad_mod_id"/>
+</com.google.android.material.appbar.AppBarLayout>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.edit.EditActivity">
+
+    <include
+        layout="@layout/app_bar"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/linear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:background="@drawable/bg_click_btn"
+                android:elevation="2dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvRun"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:textAlignment="center"
+                    android:textColor="?android:attr/colorForeground"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="EllipsizeMaxLines,RtlCompat"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:text="@string/app_name" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imgCover"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:civ_border_color="@color/colorAccent"
+                    app:civ_border_width="1dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvRun"
+                    tools:src="@tools:sample/avatars" />
+
+                <ImageButton
+                    android:id="@+id/btnAddCover"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    style="@style/Widget.Design.FloatingActionButton"
+                    android:contentDescription="@string/name"
+                    android:src="@drawable/ic_baseline_add_a_photo"
+                    app:layout_constraintBottom_toBottomOf="@+id/imgCover"
+                    app:layout_constraintEnd_toEndOf="@+id/imgCover" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_vertical_padding"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="@+id/imgCover"
+                    app:layout_constraintEnd_toEndOf="@+id/tvRun"
+                    app:layout_constraintStart_toEndOf="@+id/imgCover"
+                    app:layout_constraintTop_toTopOf="@+id/imgCover">
+
+                    <EditText
+                        android:id="@+id/edtUniversity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="@string/university"
+                        android:hint="@string/university"
+                        android:inputType="text"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/edtFaculty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="@string/faculty"
+                        android:hint="@string/faculty"
+                        android:inputType="text"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/labeled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/linear"
+                android:background="@drawable/bg_costume"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:layout_marginVertical="4dp"
+                android:padding="@dimen/activity_horizontal_margin"
+                tools:ignore="UselessParent">
+
+                <EditText
+                    android:id="@+id/edtStudy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/study_program"
+                    android:hint="@string/study_program"
+                    android:inputType="text"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtSemester"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/semester"
+                    android:hint="@string/semester"
+                    android:inputType="number"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtCourses"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/courses"
+                    android:hint="@string/courses"
+                    android:inputType="text"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    android:background="@drawable/bg_click_btn"
+                    android:text="@string/save"
+                    android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
