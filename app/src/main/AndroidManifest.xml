@@ -17,7 +17,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.main.courses.JoinActivity"></activity>
         <activity
             android:name=".ui.main.edit.CoursesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -26,6 +25,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.main.courses.CreateActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.main.courses.JoinActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.main.edit.ProfileActivity"

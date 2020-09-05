@@ -78,7 +78,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     public int getItemViewType(int position) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
-            if (modelHomes.get(position).getIdClass().equals(firebaseUser.getUid())){
+            if (modelHomes.get(position).getUserId().equals(firebaseUser.getUid())){
                 return CLASS_LEFT;
             }else
                 return CLASS_RIGHT;
@@ -129,7 +129,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                             shareIdClass(modelHome,callback);
                             return true;
                         case R.id.action_edit:
-                            editIdClass(modelHome,firebaseUser);
+                            if (modelHome.getUserId().equals(firebaseUser.getUid())){
+                                editIdClass(modelHome,firebaseUser);
+                            } else {
+                                Toast.makeText(contextHome, contextHome.getString(R.string.not_edit_class),Toast.LENGTH_SHORT).show();
+                            }
                             return true;
                         case R.id.action_delete:
                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(contextHome);
@@ -138,7 +142,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                                     .setMessage(contextHome.getString(R.string.delete_your_class,modelHome.getCourses()))
                                     .setCancelable(false)
                                     .setPositiveButton(contextHome.getString(R.string.yes), (dialog, id) -> {
-                                        deleteIdClass(database,modelHome,firebaseUser);
+                                        deleteIdClass(modelHome,database,firebaseUser);
                                     })
                                     .setNegativeButton(R.string.no, (dialog, id) -> dialog.cancel());
                             AlertDialog alertDialog = alertDialogBuilder.create();
@@ -174,10 +178,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             });
         }
 
-        private void LeftIdClass(FirebaseDatabase database, FirebaseUser firebaseUser) {
-            Toast.makeText(contextHome, "Exit in Class",Toast.LENGTH_SHORT).show();
-        }
-
         private void shareIdClass(ModelHome modelHome, HomeFragmentCallback callback) {
             callback.onShareClick(modelHome);
         }
@@ -185,28 +185,34 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         private void editIdClass(ModelHome modelHome, FirebaseUser firebaseUser) {
             if (firebaseUser!=null){
                 Intent intent = new Intent(contextHome, CoursesActivity.class);
-                intent.putExtra("urlCover",modelHome.getUrlCover());
-                intent.putExtra("university",modelHome.getUniversity());
-                intent.putExtra("faculty",modelHome.getFaculty());
-                intent.putExtra("study",modelHome.getStudy());
-                intent.putExtra("semester",modelHome.getSemester());
+                intent.putExtra("classId",modelHome.getClassId());
                 intent.putExtra("courses",modelHome.getCourses());
+                intent.putExtra("faculty",modelHome.getFaculty());
+                intent.putExtra("semester",modelHome.getSemester());
+                intent.putExtra("study",modelHome.getStudy());
+                intent.putExtra("university",modelHome.getUniversity());
+                intent.putExtra("urlCover",modelHome.getUrlCover());
                 contextHome.startActivity(intent);
                 Activity activity = (Activity) contextHome;
                 activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
                 activity.finish();
             }
         }
-        private void deleteIdClass(FirebaseDatabase database, ModelHome modelHome, FirebaseUser firebaseUser) {
+        private void deleteIdClass(ModelHome modelHome, FirebaseDatabase database, FirebaseUser firebaseUser) {
             String userId = firebaseUser.getUid();
-            database.getReference(contextHome.getString(R.string.name_class)).child(userId).child(modelHome.getCourses()).removeValue().addOnCompleteListener(task -> {
+            database.getReference(contextHome.getString(R.string.name_class)).child(userId).child(modelHome.getClassId()).removeValue().addOnCompleteListener(task -> {
               if (task.isSuccessful()){
-                  Intent intent = new Intent(contextHome, MainNavActivity.class);
-                  Toast.makeText(contextHome,contextHome.getString(R.string.delete_class),Toast.LENGTH_SHORT).show();
-                  contextHome.startActivity(intent);
-                  Activity activity = (Activity) contextHome;
-                  activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
-                  activity.finish();
+                  database.getReference(contextHome.getString(R.string.name_class_list)).child(modelHome.getClassId()).removeValue().addOnCompleteListener(taskClass -> {
+                     if (taskClass.isSuccessful()){
+                         Intent intent = new Intent(contextHome, MainNavActivity.class);
+                         Toast.makeText(contextHome,contextHome.getString(R.string.delete_class),Toast.LENGTH_SHORT).show();
+                         contextHome.startActivity(intent);
+                         Activity activity = (Activity) contextHome;
+                         activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                         activity.finish();
+                     } else {
+                         Toast.makeText(contextHome,contextHome.getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
+                     }});
               } else {
                   Toast.makeText(contextHome,contextHome.getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
               }});

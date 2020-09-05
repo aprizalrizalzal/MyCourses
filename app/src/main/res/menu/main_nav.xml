@@ -17,6 +17,6 @@
         android:id="@+id/action_help"
         android:orderInCategory="3"
         android:title="@string/action_help"
-        android:icon="@drawable/ic_baseline_help"
+        android:icon="@drawable/ic_baseline_help_outline"
         app:showAsAction="ifRoom" />
 </menu>

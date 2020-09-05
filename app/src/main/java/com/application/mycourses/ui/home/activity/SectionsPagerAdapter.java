@@ -1,43 +1,51 @@
 package com.application.mycourses.ui.home.activity;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import java.util.ArrayList;
+import com.application.mycourses.R;
+import com.application.mycourses.ui.home.activity.tab.MaterialFragment;
+import com.application.mycourses.ui.home.activity.tab.MemberFragment;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    private ArrayList<Fragment> fragments;
-    private ArrayList<String> titles;
+    @StringRes
+    private static final int[] TAB_TILES =new int[]{R.string.material,R.string.member};
+    private final Context mContext;
 
-    public SectionsPagerAdapter(@NonNull FragmentManager fm) {
-        super(fm);
-        this.fragments = new ArrayList<>();
-        this.titles = new ArrayList<>();
+    public SectionsPagerAdapter(@NonNull  Context mContext,  FragmentManager fm) {
+        super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        this.mContext = mContext;
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        return fragments.get(position);
+        switch (position){
+            case 0:
+                return new MaterialFragment();
+            case 1:
+                return new MemberFragment();
+            default:
+                return new Fragment();
+        }
     }
 
-    public void addFragment(Fragment fragment , String title){
-        fragments.add(fragment);
-        titles.add(title);
+    @Override
+    public int getCount() {
+        return 2;
     }
 
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return titles.get(position);
-    }
-
-    @Override
-    public int getCount() {
-        return fragments.size();
+        return mContext.getResources().getString(TAB_TILES[position]);
     }
 }

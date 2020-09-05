@@ -120,8 +120,8 @@
     <string name="id_class">Id Class</string>
     <string name="search_class">If you wish to join the Class, Please enter the correct class ID</string>
     <string name="num_id_class_failed">You are not registered in the class id or the class id number you entered is wrong</string>
-    <string name="your_class">Class Created</string>
-    <string name="join_class">Classes That Are Followed</string>
+    <string name="your_class">Class was successfully Created</string>
+    <string name="join_class">Class was successfully followed</string>
     <string name="action_delete">Delete</string>
     <string name="action_edit">Edit</string>
     <string name="action_share">Share</string>
@@ -134,7 +134,7 @@
     <string name="replace_it">Data on %s subjects already exist. Do you want to replace it?</string>
     <string name="create_new">You will create an %s class?</string>
     <string name="info">Information!</string>
-    <string name="id_class_found">Class id found, are you sure you want to join?</string>
+    <string name="id_class_found">Class ID found, please press join to continue</string>
     <string name="id_class_not_found">Class ID not found, try again and check the id you entered?</string>
     <string name="retry">Retry</string>
     <string name="name_class">Class</string>
@@ -146,4 +146,7 @@
     <string name="action_exit">Exit</string>
     <string name="delete">Delete</string>
     <string name="delete_your_class">Are you going to remove the %s class. If sure choose yes</string>
+    <string name="join_failed">Class failed to follow</string>
+    <string name="not_edit_class">You are only allowed to share and delete classes. Classes can only be edited by teachers</string>
+    <string name="name_class_list">ListClass</string>
 </resources>

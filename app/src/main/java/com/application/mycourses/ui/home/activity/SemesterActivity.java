@@ -42,14 +42,6 @@ public class SemesterActivity extends AppCompatActivity {
         String semester = intent.getStringExtra("semester");
         String courses = intent.getStringExtra("courses");
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        sectionsPagerAdapter.addFragment(new MaterialFragment(),getString(R.string.material));
-        sectionsPagerAdapter.addFragment(new MemberFragment(),getString(R.string.member));
-
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -69,6 +61,10 @@ public class SemesterActivity extends AppCompatActivity {
         }
         TextView appBar = findViewById(R.id.tvAppBar);
         appBar.setText(courses);
+
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this,getSupportFragmentManager());
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(sectionsPagerAdapter);
 
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);

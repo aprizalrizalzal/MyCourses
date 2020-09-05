@@ -3,6 +3,7 @@ package com.application.mycourses.ui.main.courses;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.preference.ListPreference;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -25,6 +26,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,11 +34,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -133,23 +140,39 @@ public class CreateActivity extends AppCompatActivity {
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             saveCurrencyTime = timeFormat.format(calendar.getTime());
 
+            String dateCreated = String.format("%s at %s",saveCurrencyDate,saveCurrencyTime);
+            String uniqueID = UUID.randomUUID().toString().substring(0,8);
+
             Map<String, Object> map = new HashMap<>();
+            map.put("classId",uniqueID);
             map.put("courses",courses);
+            map.put("dateCreated",dateCreated);
             map.put("faculty",faculty);
-            map.put("idClass",userId);
             map.put("semester",semester);
             map.put("study",study);
             map.put("university",university);
             map.put("urlCover","urlCover");
-            map.put("dateCreated", String.format("%s at %s",saveCurrencyDate,saveCurrencyTime));
+            map.put("userId",userId);
 
-            database.getReference("Class").child(userId).child(courses).setValue(map).addOnCompleteListener(this, task -> {
+            database.getReference(getString(R.string.name_class)).child(userId).child(uniqueID).setValue(map).addOnCompleteListener(this, task -> {
                 if (task.isSuccessful()){
-                    Toast.makeText(CreateActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
-                    loadingProgress.dismissLoadingProgress();
-                    startActivity(new Intent(CreateActivity.this, MainNavActivity.class));
-                    overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
-                    finish();
+
+                    Map<String, Object> mapClass = new HashMap<>();
+                    mapClass.put("classId",uniqueID);
+                    mapClass.put("userId",userId);
+
+                    database.getReference(getString(R.string.name_class_list)).child(uniqueID).setValue(mapClass).addOnCompleteListener(this, taskClass -> {
+                        if (taskClass.isSuccessful()){
+                            Toast.makeText(CreateActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
+                            loadingProgress.dismissLoadingProgress();
+                            startActivity(new Intent(CreateActivity.this, MainNavActivity.class));
+                            overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                            finish();
+                        }else {
+                            Toast.makeText(CreateActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
+                            loadingProgress.dismissLoadingProgress();
+                        }
+                            });
                 }else {
                     Toast.makeText(CreateActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
                     loadingProgress.dismissLoadingProgress();

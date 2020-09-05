@@ -30,11 +30,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment implements HomeFragmentCallback {
 
-    private static final int CLASS_LEFT=0;
-    private static final int CLASS_RIGHT=1;
-
     private SwipeRefreshLayout refreshLayout;
-    private FirebaseUser firebaseUser;
     private FirebaseDatabase database;
     private HomeAdapter homeAdapter;
     private List<ModelHome> modelHomes = new ArrayList<>();
@@ -55,53 +51,55 @@ public class HomeFragment extends Fragment implements HomeFragmentCallback {
         FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
         refreshLayout = view.findViewById(R.id.swipeRefresh);
         progressBar = view.findViewById(R.id.progressBar);
         rvHome = view.findViewById(R.id.rvHome);
 
         refreshLayout.setOnRefreshListener(() -> {
-            readHome(firebaseUser, database);
+                readHome(firebaseAuth,database);
             refreshLayout.setRefreshing(false);
         });
 
         if (getActivity() != null) {
-            readHome(firebaseUser, database);
+                readHome(firebaseAuth,database);
         }
 
     }
 
-    private void readHome(FirebaseUser firebaseUser, FirebaseDatabase database) {
+    private void readHome(FirebaseAuth firebaseAuth, FirebaseDatabase database) {
 
         progressBar.setVisibility(View.VISIBLE);
-        String userId = firebaseUser.getUid();
 
-        database.getReference(getString(R.string.name_class)).child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    modelHomes.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        ModelHome modelHome = dataSnapshot.getValue(ModelHome.class);
-                        if (modelHome != null) {
-                            modelHomes.add(modelHome);
-                            homeAdapter = new HomeAdapter(getContext(), modelHomes, HomeFragment.this);
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser !=null) {
+            String userId = firebaseUser.getUid();
+            database.getReference(getString(R.string.name_class)).child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        modelHomes.clear();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            ModelHome modelHome = dataSnapshot.getValue(ModelHome.class);
+                            if (modelHome != null) {
+                                modelHomes.add(modelHome);
+                                homeAdapter = new HomeAdapter(getContext(), modelHomes, HomeFragment.this);
+                            }
+                            rvHome.setAdapter(homeAdapter);
+                            rvHome.setLayoutManager(new LinearLayoutManager(getContext()));
+                            rvHome.setHasFixedSize(true);
+                            progressBar.setVisibility(View.GONE);
                         }
-                        rvHome.setAdapter(homeAdapter);
-                        rvHome.setLayoutManager(new LinearLayoutManager(getContext()));
-                        rvHome.setHasFixedSize(true);
+                    } else {
                         progressBar.setVisibility(View.GONE);
                     }
-                }else {
-                    progressBar.setVisibility(View.GONE);
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        }
     }
 
     @Override
@@ -112,7 +110,7 @@ public class HomeFragment extends Fragment implements HomeFragmentCallback {
                 .from(requireActivity())
                 .setType(mimeType)
                 .setChooserTitle(getString(R.string.on_share))
-                .setText(getResources().getString(R.string.share_text,modelHome.getIdClass(),modelHome.getCourses()))
+                .setText(getResources().getString(R.string.share_text,modelHome.getUserId(),modelHome.getCourses()))
                 .startChooser();
     }
 }

@@ -94,12 +94,13 @@ public class CoursesActivity extends AppCompatActivity {
         edtCour = findViewById(R.id.edtCourses);
 
         Intent intent = getIntent();
+        String idClass = intent.getStringExtra("classId");
+        String courses = intent.getStringExtra("courses");
         String urlCover = intent.getStringExtra("urlCover");
         String university = intent.getStringExtra("university");
         String faculty = intent.getStringExtra("faculty");
         String study = intent.getStringExtra("study");
         String semester = intent.getStringExtra("semester");
-        String courses = intent.getStringExtra("courses");
 
         if (urlCover != null) {
             readItems(urlCover,university,faculty,study,semester,courses);
@@ -143,7 +144,7 @@ public class CoursesActivity extends AppCompatActivity {
                     return;
                 }
                 if (firebaseUser != null) {
-                    editClass(firebaseUser,database);
+                    editClass(firebaseUser,database,idClass,urlCover);
                 }
             }
         });
@@ -177,7 +178,7 @@ public class CoursesActivity extends AppCompatActivity {
         edtCour.setText(courses);
     }
 
-    private void editClass(FirebaseUser firebaseUser, FirebaseDatabase database) {
+    private void editClass(FirebaseUser firebaseUser, FirebaseDatabase database, String idClass, String urlCover) {
 
         loadingProgress.startLoadingProgress();
 
@@ -198,18 +199,18 @@ public class CoursesActivity extends AppCompatActivity {
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         saveCurrencyTime = timeFormat.format(calendar.getTime());
 
+        String lastUpdate = String.format("%s at %s",saveCurrencyDate,saveCurrencyTime);
 
         Map<String, Object> map = new HashMap<>();
         map.put("courses",courses);
         map.put("faculty",faculty);
-        map.put("idClass",userId);
+        map.put("lastUpdate", lastUpdate);
         map.put("semester",semester);
         map.put("study",study);
         map.put("university",university);
-        map.put("urlCover","urlCover");
-        map.put("lastUpdate", String.format("%s at %s",saveCurrencyDate,saveCurrencyTime));
+        map.put("urlCover",urlCover);
 
-        database.getReference(getString(R.string.name_class)).child(userId).child(courses).updateChildren(map).addOnCompleteListener(this, task -> {
+        database.getReference(getString(R.string.name_class)).child(userId).child(idClass).updateChildren(map).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()){
                 Toast.makeText(CoursesActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
                 loadingProgress.dismissLoadingProgress();
@@ -267,7 +268,7 @@ public class CoursesActivity extends AppCompatActivity {
                     Map<String,Object> map = new HashMap<>();
                     map.put("urlCover", myUri);
 
-                    database.getReference(getString(R.string.name_class)).child(userId).child(courses).updateChildren(map).addOnCompleteListener(this, taskUpdate -> {
+                    database.getReference(getString(R.string.name_class)).child(userId).updateChildren(map).addOnCompleteListener(this, taskUpdate -> {
                         if (taskUpdate.isSuccessful()){
                             Toast.makeText(CoursesActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(CoursesActivity.this, MainNavActivity.class));
