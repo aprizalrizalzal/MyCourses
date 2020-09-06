@@ -110,7 +110,7 @@ public class HomeFragment extends Fragment implements HomeFragmentCallback {
                 .from(requireActivity())
                 .setType(mimeType)
                 .setChooserTitle(getString(R.string.on_share))
-                .setText(getResources().getString(R.string.share_text,modelHome.getUserId(),modelHome.getCourses()))
+                .setText(getResources().getString(R.string.share_text,modelHome.getClassId(),modelHome.getCourses()))
                 .startChooser();
     }
 }

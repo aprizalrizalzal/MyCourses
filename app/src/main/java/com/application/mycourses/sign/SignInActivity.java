@@ -1,6 +1,5 @@
-package com.application.mycourses.sign.in;
+package com.application.mycourses.sign;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,7 +20,6 @@ import android.widget.Toast;
 
 import com.application.mycourses.MainNavActivity;
 import com.application.mycourses.R;
-import com.application.mycourses.sign.up.SignUpActivity;
 import com.application.mycourses.ui.utils.LoadingProgress;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -145,7 +143,7 @@ public class SignInActivity extends AppCompatActivity {
         email = edtEmail.getText().toString();
         password = edtPassword.getText().toString();
         loadingProgress.startLoadingProgress();
-        firebaseAuth.signInWithEmailAndPassword(email,password).addOnSuccessListener(this, authResult -> {
+        firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(this, task -> {
             startActivity(new Intent(getApplication(),MainNavActivity.class));
             Toast.makeText(this, getString(R.string.sign_in_successfully),Toast.LENGTH_SHORT).show();
             overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
@@ -160,7 +158,7 @@ public class SignInActivity extends AppCompatActivity {
     private void userSend(FirebaseAuth firebaseAuth) {
         email = edtEmail.getText().toString();
         loadingProgress.startLoadingProgress();
-        firebaseAuth.sendPasswordResetEmail(email).addOnSuccessListener(this, aVoid -> {
+        firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(this, task -> {
             Toast.makeText(this, getString(R.string.cek_email),Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this,SignInActivity.class));
             overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);

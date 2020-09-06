@@ -50,6 +50,7 @@
                         android:textColor="?android:attr/colorForeground"
                         android:textSize="16sp"
                         android:textStyle="bold"
+                        android:paddingBottom="@dimen/activity_horizontal_padding"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="EllipsizeMaxLines,RtlCompat"
                         tools:layout_editor_absoluteX="16dp"

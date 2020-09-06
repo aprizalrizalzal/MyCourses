@@ -15,54 +15,82 @@
            android:layout_height="match_parent"
            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-            <LinearLayout
-                android:id="@+id/linear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="4dp"
-                android:background="@drawable/bg_costume"
-                android:elevation="2dp"
-                android:orientation="horizontal">
+           <LinearLayout
+               android:id="@+id/linear"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="@drawable/bg_costume"
+               android:orientation="vertical">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/img_view"
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:contentDescription="@string/app_name"
-                    android:elevation="2dp"
-                    android:src="@mipmap/ic_launcher">
-                </de.hdodenhof.circleimageview.CircleImageView>
+               <TextView
+                   android:id="@+id/tvRun"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:elevation="2dp"
+                   android:translationZ="2dp"
+                   tools:text="@string/app_name"
+                   android:scrollHorizontally="true"
+                   android:maxLines="1"
+                   android:singleLine="true"
+                   android:ellipsize="marquee"
+                   android:marqueeRepeatLimit="marquee_forever"
+                   android:textColor="?android:attr/colorForeground"
+                   android:focusable="true"
+                   android:textSize="16sp"
+                   android:textStyle="bold"
+                   android:focusableInTouchMode="true"
+                   android:layout_marginHorizontal="@dimen/activity_horizontal_padding"
+                   android:padding="@dimen/activity_vertical_padding"
+                   tools:ignore="EllipsizeMaxLines"
+                   android:textAlignment="center"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                    android:orientation="vertical">
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginVertical="4dp"
+                   android:elevation="2dp"
+                   android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/edtClassId"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:autofillHints="@string/id_class"
-                        android:hint="@string/id_class"
-                        android:inputType="text"
-                        android:textSize="14sp" />
+                   <de.hdodenhof.circleimageview.CircleImageView
+                       android:id="@+id/img_view"
+                       android:layout_width="75dp"
+                       android:layout_height="75dp"
+                       android:layout_gravity="center"
+                       android:layout_marginStart="@dimen/activity_horizontal_margin"
+                       android:contentDescription="@string/app_name"
+                       android:elevation="2dp"
+                       android:src="@mipmap/ic_launcher" />
 
-                    <Button
-                        android:id="@+id/btnSearch"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="@dimen/activity_vertical_margin"
-                        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                        android:background="@drawable/bg_click_btn"
-                        android:text="@string/action_search"
-                        android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
-                        android:textSize="16sp"/>
-                </LinearLayout>
-            </LinearLayout>
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:layout_gravity="center"
+                       android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+                       android:orientation="vertical">
+
+
+                       <EditText
+                           android:id="@+id/edtClassId"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:autofillHints="@string/id_class"
+                           android:hint="@string/id_class"
+                           android:inputType="text"
+                           android:textSize="14sp" />
+
+                       <Button
+                           android:id="@+id/btnSearch"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+                           android:layout_marginVertical="@dimen/activity_vertical_margin"
+                           android:background="@drawable/bg_click_btn"
+                           android:text="@string/action_search"
+                           android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
+                           android:textSize="16sp" />
+                   </LinearLayout>
+               </LinearLayout>
+           </LinearLayout>
 
            <androidx.core.widget.NestedScrollView
                android:layout_width="match_parent"
@@ -70,7 +98,8 @@
                android:layout_below="@id/linear">
 
                <LinearLayout
-                   android:id="@+id/labeled"
+                   android:id="@+id/result"
+                   android:visibility="gone"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:background="@drawable/bg_costume"
@@ -80,54 +109,43 @@
                    android:padding="@dimen/activity_horizontal_margin"
                    tools:ignore="UselessParent">
 
-                   <EditText
-                       android:id="@+id/edtUniversity"
+                   <TextView
+                       android:id="@+id/tvUniversity"
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content"
-                       android:autofillHints="@string/university"
-                       android:hint="@string/university"
-                       android:enabled="false"
-                       android:inputType="text"
+                       android:layout_marginVertical="@dimen/activity_vertical_margin"
+                       tools:text="@string/university"
                        android:textSize="14sp" />
 
-                   <EditText
-                       android:id="@+id/edtFaculty"
+                   <TextView
+                       android:id="@+id/tvFaculty"
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content"
-                       android:autofillHints="@string/faculty"
-                       android:hint="@string/faculty"
-                       android:enabled="false"
-                       android:inputType="text"
+                       tools:text="@string/faculty"
                        android:textSize="14sp" />
 
-                   <EditText
-                       android:id="@+id/edtStudy"
+                   <TextView
+                       android:id="@+id/tvStudy"
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content"
-                       android:autofillHints="@string/study_program"
-                       android:hint="@string/study_program"
-                       android:enabled="false"
-                       android:inputType="text"
+                       android:layout_marginVertical="@dimen/activity_vertical_margin"
+                       tools:text="@string/study_program"
                        android:textSize="14sp" />
 
-                   <EditText
-                       android:id="@+id/edtSemester"
+                   <TextView
+                       android:id="@+id/tvSemester"
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content"
-                       android:autofillHints="@string/semester"
-                       android:hint="@string/semester"
-                       android:enabled="false"
-                       android:inputType="number"
+                       tools:text="@string/semester"
                        android:textSize="14sp" />
 
-                   <EditText
-                       android:id="@+id/edtCourses"
+                   <TextView
+                       android:id="@+id/tvCourses"
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content"
+                       android:layout_marginVertical="@dimen/activity_vertical_margin"
                        android:autofillHints="@string/courses"
-                       android:hint="@string/courses"
-                       android:enabled="false"
-                       android:inputType="text"
+                       tools:text="@string/courses"
                        android:textSize="14sp" />
 
                    <Button
@@ -136,7 +154,6 @@
                        android:layout_height="wrap_content"
                        android:layout_margin="@dimen/activity_horizontal_margin"
                        android:background="@drawable/bg_click_btn"
-                       android:enabled="false"
                        android:text="@string/join"
                        android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
                        android:textSize="16sp"/>

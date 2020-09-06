@@ -1,4 +1,4 @@
-package com.application.mycourses.sign.up;
+package com.application.mycourses.sign;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.application.mycourses.R;
-import com.application.mycourses.sign.in.SignInActivity;
 import com.application.mycourses.ui.utils.LoadingProgress;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -134,7 +133,7 @@ public class SignUpActivity extends AppCompatActivity {
         email = edtEmail.getText().toString();
         password = edtPassword.getText().toString();
         loadingProgress.startLoadingProgress();
-        firebaseAuth.createUserWithEmailAndPassword(email,password).addOnSuccessListener(this, authResult -> {
+        firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, task -> {
             firebaseUser = firebaseAuth.getCurrentUser();
             if (firebaseUser != null) {
                 userId = firebaseUser.getUid();

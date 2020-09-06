@@ -22,7 +22,7 @@ import androidx.preference.SwitchPreferenceCompat;
 
 import com.application.mycourses.MainNavActivity;
 import com.application.mycourses.R;
-import com.application.mycourses.sign.in.SignInActivity;
+import com.application.mycourses.sign.SignInActivity;
 import com.application.mycourses.ui.settings.reauth.ReAuthenticateActivity;
 import com.application.mycourses.ui.utils.LoadingProgress;
 import com.bumptech.glide.Glide;

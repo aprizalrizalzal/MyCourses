@@ -87,20 +87,9 @@ public class CreateActivity extends AppCompatActivity {
 
         loadingProgress= new LoadingProgress(this);
 
-        Calendar welcome = Calendar.getInstance();
-        int timeOfDay = welcome.get(Calendar.HOUR_OF_DAY);
-
         TextView run = findViewById(R.id.tvRun);
-        if (timeOfDay >=0 && timeOfDay <12){
-            run.setText(getString(R.string.welcome,getString(R.string.morning)));
-            run.setSelected(true);
-        } else if (timeOfDay >=12 && timeOfDay <18){
-            run.setText(getString(R.string.welcome,getString(R.string.afternoon)));
-            run.setSelected(true);
-        }else if (timeOfDay >=18 && timeOfDay <24) {
-            run.setText(getString(R.string.welcome, getString(R.string.night)));
-            run.setSelected(true);
-        }
+        run.setText(getString(R.string.create_class));
+        run.setSelected(true);
 
         Button btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(view -> {
@@ -117,8 +106,8 @@ public class CreateActivity extends AppCompatActivity {
     }
 
     private void createClass(FirebaseUser firebaseUser, FirebaseDatabase database) {
-        if (haveConnection()){
-            if (!validateUni()||!validateFac()||!validateStud()||!validateSem()||!validateCour()){
+        if (haveConnection()) {
+            if (!validateUni() || !validateFac() || !validateStud() || !validateSem() || !validateCour()) {
                 return;
             }
             loadingProgress.startLoadingProgress();
@@ -140,44 +129,51 @@ public class CreateActivity extends AppCompatActivity {
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             saveCurrencyTime = timeFormat.format(calendar.getTime());
 
-            String dateCreated = String.format("%s at %s",saveCurrencyDate,saveCurrencyTime);
-            String uniqueID = UUID.randomUUID().toString().substring(0,8);
+            String dateCreated = String.format("%s at %s", saveCurrencyDate, saveCurrencyTime);
+            String uniqueID = UUID.randomUUID().toString().substring(0, 8);
 
             Map<String, Object> map = new HashMap<>();
-            map.put("classId",uniqueID);
-            map.put("courses",courses);
-            map.put("dateCreated",dateCreated);
-            map.put("faculty",faculty);
-            map.put("semester",semester);
-            map.put("study",study);
-            map.put("university",university);
-            map.put("urlCover","urlCover");
-            map.put("userId",userId);
+            map.put("classId", uniqueID);
+            map.put("courses", courses);
+            map.put("dateCreated", dateCreated);
+            map.put("faculty", faculty);
+            map.put("semester", semester);
+            map.put("study", study);
+            map.put("university", university);
+            map.put("urlCover", "urlCover");
+            map.put("userId", userId);
 
             database.getReference(getString(R.string.name_class)).child(userId).child(uniqueID).setValue(map).addOnCompleteListener(this, task -> {
-                if (task.isSuccessful()){
+                Map<String, Object> mapClass = new HashMap<>();
+                mapClass.put("classId", uniqueID);
+                mapClass.put("userId", userId);
 
-                    Map<String, Object> mapClass = new HashMap<>();
-                    mapClass.put("classId",uniqueID);
-                    mapClass.put("userId",userId);
+                database.getReference(getString(R.string.name_class_list)).child(uniqueID).setValue(mapClass).addOnCompleteListener(this, taskClass -> {
+                    Map<String, Object> member = new HashMap<>();
+                    member.put("userId", userId);
+                    member.put("status", "Owner");
 
-                    database.getReference(getString(R.string.name_class_list)).child(uniqueID).setValue(mapClass).addOnCompleteListener(this, taskClass -> {
-                        if (taskClass.isSuccessful()){
-                            Toast.makeText(CreateActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
-                            loadingProgress.dismissLoadingProgress();
-                            startActivity(new Intent(CreateActivity.this, MainNavActivity.class));
-                            overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
-                            finish();
-                        }else {
-                            Toast.makeText(CreateActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
-                            loadingProgress.dismissLoadingProgress();
-                        }
-                            });
-                }else {
-                    Toast.makeText(CreateActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
+                    database.getReference(getString(R.string.member_class)).child(uniqueID).child(userId).setValue(member).addOnCompleteListener(this, taskMember -> {
+                        Toast.makeText(CreateActivity.this, R.string.data_update, Toast.LENGTH_SHORT).show();
+                        loadingProgress.dismissLoadingProgress();
+                        startActivity(new Intent(CreateActivity.this, MainNavActivity.class));
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                        finish();
+                    }).addOnFailureListener(this, e -> {
+                        Toast.makeText(CreateActivity.this, getText(R.string.update_failed), Toast.LENGTH_SHORT).show();
+                        loadingProgress.dismissLoadingProgress();
+                    });
+
+                }).addOnFailureListener(this, e -> {
+                    Toast.makeText(CreateActivity.this, getText(R.string.update_failed), Toast.LENGTH_SHORT).show();
                     loadingProgress.dismissLoadingProgress();
-                }
+                });
+
+            }).addOnFailureListener(this, e -> {
+                Toast.makeText(CreateActivity.this, getText(R.string.update_failed), Toast.LENGTH_SHORT).show();
+                loadingProgress.dismissLoadingProgress();
             });
+
         }else {
             Toast.makeText(this, getString(R.string.not_have_connection),Toast.LENGTH_SHORT).show();
         }

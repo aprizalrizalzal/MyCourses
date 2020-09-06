@@ -20,7 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.application.mycourses.MainNavActivity;
 import com.application.mycourses.R;
-import com.application.mycourses.sign.in.SignInActivity;
+import com.application.mycourses.sign.SignInActivity;
 import com.application.mycourses.ui.utils.LoadingProgress;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -108,28 +108,25 @@ public class ReAuthenticateActivity extends AppCompatActivity {
         AuthCredential credential = EmailAuthProvider.getCredential(email, password);
 
         firebaseUser.reauthenticate(credential).addOnCompleteListener(taskVer -> {
-            if (taskVer.isSuccessful()){
-
-                loadingProgress.dismissLoadingProgress();
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ReAuthenticateActivity.this);
-                alertDialogBuilder
-                        .setTitle(R.string.delete_account)
-                        .setMessage(getString(R.string.verify_account))
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.yes, (dialog, id) -> {
-                            loadingProgress.dismissLoadingProgress();
-                            deleteAuthUser(firebaseUser);
-                                })
-                        .setNegativeButton(R.string.no, (dialog, id) -> {
-                            loadingProgress.dismissLoadingProgress();
-                            edtEmail.setText(null);
-                            edtPassword.setText(null);
-                            dialog.cancel();
-                        });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(getDrawable(R.drawable.bg_costume));
-                alertDialog.show();
-            }
+            loadingProgress.dismissLoadingProgress();
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ReAuthenticateActivity.this);
+            alertDialogBuilder
+                    .setTitle(R.string.delete_account)
+                    .setMessage(getString(R.string.verify_account))
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.yes, (dialog, id) -> {
+                        loadingProgress.dismissLoadingProgress();
+                        deleteAuthUser(firebaseUser);
+                            })
+                    .setNegativeButton(R.string.no, (dialog, id) -> {
+                        loadingProgress.dismissLoadingProgress();
+                        edtEmail.setText(null);
+                        edtPassword.setText(null);
+                        dialog.cancel();
+                    });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(getDrawable(R.drawable.bg_costume));
+            alertDialog.show();
         }).addOnFailureListener(e -> {
             Toast.makeText(ReAuthenticateActivity.this, getString(R.string.auth_failed), Toast.LENGTH_SHORT).show();
             loadingProgress.dismissLoadingProgress();

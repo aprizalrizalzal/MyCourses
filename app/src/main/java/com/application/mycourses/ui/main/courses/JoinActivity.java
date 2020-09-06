@@ -11,8 +11,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +47,9 @@ public class JoinActivity extends AppCompatActivity {
 
     private Button btnJoin;
     private CircleImageView imgView;
-    private EditText edtClassId,edtUni,edtFac,edtStud,edtSem,edtCour;
+    private LinearLayout result;
+    private EditText edtClassId;
+    private TextView tvUni,tvFac,tvStud,tvSem,tvCour;
     private String classId;
     private LoadingProgress loadingProgress;
 
@@ -67,13 +71,18 @@ public class JoinActivity extends AppCompatActivity {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
+        TextView run = findViewById(R.id.tvRun);
+        run.setText(getString(R.string.join_id_class));
+        run.setSelected(true);
+
         imgView =findViewById(R.id.img_view);
         edtClassId = findViewById(R.id.edtClassId);
-        edtUni = findViewById(R.id.edtUniversity);
-        edtFac = findViewById(R.id.edtFaculty);
-        edtStud = findViewById(R.id.edtStudy);
-        edtSem = findViewById(R.id.edtSemester);
-        edtCour = findViewById(R.id.edtCourses);
+        result = findViewById(R.id.result);
+        tvUni = findViewById(R.id.tvUniversity);
+        tvFac = findViewById(R.id.tvFaculty);
+        tvStud = findViewById(R.id.tvStudy);
+        tvSem = findViewById(R.id.tvSemester);
+        tvCour = findViewById(R.id.tvCourses);
         btnJoin = findViewById(R.id.btnJoin);
 
         CircleImageView imageViewAppBar = findViewById(R.id.imgAppBar);
@@ -145,26 +154,17 @@ public class JoinActivity extends AppCompatActivity {
                                 .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
                                 .into(imgView);
                     }
-                    edtUni.setText(modelHome.getUniversity());
-                    edtUni.setInputType(InputType.TYPE_NULL);
-                    edtUni.setEnabled(true);
-                    edtFac.setText(modelHome.getFaculty());
-                    edtFac.setInputType(InputType.TYPE_NULL);
-                    edtFac.setEnabled(true);
-                    edtStud.setText(modelHome.getStudy());
-                    edtStud.setInputType(InputType.TYPE_NULL);
-                    edtStud.setEnabled(true);
-                    edtSem.setText(modelHome.getSemester());
-                    edtSem.setInputType(InputType.TYPE_NULL);
-                    edtSem.setEnabled(true);
-                    edtCour.setText(modelHome.getCourses());
-                    edtCour.setInputType(InputType.TYPE_NULL);
-                    edtCour.setEnabled(true);
 
-                    btnJoin.setEnabled(true);
+                    result.setVisibility(View.VISIBLE);
+                    tvUni.setText(String.format("%s : %s",getString(R.string.university),modelHome.getUniversity()));
+                    tvFac.setText(String.format("%s : %s",getString(R.string.faculty),modelHome.getFaculty()));
+                    tvSem.setText(String.format("%s : %s",getString(R.string.semester),modelHome.getSemester()));
+                    tvStud.setText(String.format("%s : %s",getString(R.string.study_program),modelHome.getStudy()));
+                    tvCour.setText(String.format("%s : %s",getString(R.string.courses),modelHome.getCourses()));
+
                     btnJoin.setOnClickListener(view -> {
                         if (haveConnection()){
-                            joinClass(firebaseUser,idUser,idClass,database,modelHome.getUrlCover());
+                            joinClass(firebaseUser,idUser,idClass,database,modelHome);
                         } else {
                             Snackbar.make(btnJoin, getString(R.string.not_have_connection), BaseTransientBottomBar.LENGTH_INDEFINITE )
                                     .setAction(getString(R.string.retry),viewRetry -> searchClass(firebaseUser,database))
@@ -182,16 +182,17 @@ public class JoinActivity extends AppCompatActivity {
 
     }
 
-    private void joinClass(FirebaseUser firebaseUser, String idUser, String idClass, FirebaseDatabase database, String urlCover) {
+    private void joinClass(FirebaseUser firebaseUser, String idUser, String idClass, FirebaseDatabase database, ModelHome modelHome) {
         loadingProgress.startLoadingProgress();
 
         classId = edtClassId.getText().toString();
         String saveCurrencyDate, saveCurrencyTime;
-        String university = edtUni.getText().toString().toUpperCase();
-        String faculty = edtFac.getText().toString().toUpperCase();
-        String study = edtStud.getText().toString().toUpperCase();
-        String semester = edtSem.getText().toString();
-        String courses = edtCour.getText().toString().toUpperCase();
+        String university = modelHome.getUniversity();
+        String faculty = modelHome.getFaculty();
+        String semester = modelHome.getSemester();
+        String study = modelHome.getStudy();
+        String courses = modelHome.getCourses();
+        String urlCover = modelHome.getUrlCover();
 
         Calendar calendar = Calendar.getInstance();
         @SuppressLint("SimpleDateFormat")
@@ -217,16 +218,25 @@ public class JoinActivity extends AppCompatActivity {
 
         String userId = firebaseUser.getUid();
         database.getReference(getString(R.string.name_class)).child(userId).child(idClass).setValue(map).addOnCompleteListener(this, task -> {
-            if (task.isSuccessful()){
-                Toast.makeText(JoinActivity.this, R.string.join_class,Toast.LENGTH_SHORT).show();
+
+            Map<String, Object> member = new HashMap<>();
+            member.put("userId",userId);
+            member.put("status","Member");
+
+            database.getReference(getString(R.string.member_class)).child(classId).child(userId).setValue(member).addOnCompleteListener(this, taskMember -> {
                 loadingProgress.dismissLoadingProgress();
+                Toast.makeText(JoinActivity.this, R.string.join_class,Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(JoinActivity.this, MainNavActivity.class));
                 overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
                 finish();
-            }else {
+            }).addOnFailureListener(this, e -> {
                 Toast.makeText(JoinActivity.this,getText(R.string.join_failed),Toast.LENGTH_SHORT).show();
                 loadingProgress.dismissLoadingProgress();
-            }
+            });
+
+        }).addOnFailureListener(this, e -> {
+            Toast.makeText(JoinActivity.this,getText(R.string.join_failed),Toast.LENGTH_SHORT).show();
+            loadingProgress.dismissLoadingProgress();
         });
     }
 

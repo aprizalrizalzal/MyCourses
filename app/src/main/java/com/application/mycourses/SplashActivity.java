@@ -9,7 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.application.mycourses.sign.in.SignInActivity;
+import com.application.mycourses.sign.SignInActivity;
 
 public class SplashActivity extends AppCompatActivity {
 

@@ -42,10 +42,10 @@
             android:name=".MainNavActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".sign.up.SignUpActivity"
+            android:name=".sign.SignUpActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".sign.in.SignInActivity"
+            android:name=".sign.SignInActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SplashActivity"
@@ -58,7 +58,7 @@
         </activity> <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-3946611117968254~1877910146" />
     </application>
 
 </manifest>

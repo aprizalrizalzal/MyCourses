@@ -34,7 +34,7 @@ import android.widget.Toast;
 import com.application.mycourses.MainNavActivity;
 import com.application.mycourses.R;
 import com.application.mycourses.model.ModelUser;
-import com.application.mycourses.sign.in.SignInActivity;
+import com.application.mycourses.sign.SignInActivity;
 import com.application.mycourses.ui.utils.LoadingProgress;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -302,29 +302,28 @@ public class ProfileActivity extends AppCompatActivity {
                     throw Objects.requireNonNull(task.getException());
                 }
                 return fileReference.getDownloadUrl();
-            }).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    loadingProgress.dismissLoadingProgress();
-                    Uri downloadUri = task.getResult();
-                    assert downloadUri != null;
-                    String myUri = downloadUri.toString();
+            }).addOnCompleteListener(this, task -> {
 
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("urlPicture", myUri);
+                loadingProgress.dismissLoadingProgress();
+                Uri downloadUri = task.getResult();
+                assert downloadUri != null;
+                String myUri = downloadUri.toString();
 
-                    firebaseFirestore.collection(getString(R.string.app_name)).document(userId).update(map);
-                    Toast.makeText(ProfileActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
-                } else {
-                    loadingProgress.dismissLoadingProgress();
-                    Toast.makeText(ProfileActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
-                }
+                Map<String, Object> map = new HashMap<>();
+                map.put("urlPicture", myUri);
+
+                firebaseFirestore.collection(getString(R.string.app_name)).document(userId).update(map);
+                Toast.makeText(ProfileActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
+
                 btnAddCover.setVisibility(View.VISIBLE);
                 btnSaveCover.setVisibility(View.GONE);
+
             }).addOnFailureListener(e -> {
                 loadingProgress.dismissLoadingProgress();
                 Toast.makeText(getApplicationContext(), R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
                 btnAddCover.setVisibility(View.GONE);
             });
+
         } else {
             loadingProgress.dismissLoadingProgress();
             Toast.makeText(getApplicationContext(), R.string.no_image_upload, Toast.LENGTH_SHORT).show();
@@ -372,7 +371,7 @@ public class ProfileActivity extends AppCompatActivity {
         map.put("numberPhone",numberPhone);
 
         userId=firebaseUser.getUid();
-        firebaseFirestore.collection(getString(R.string.app_name)).document(userId).update(map).addOnSuccessListener(this, aVoid -> {
+        firebaseFirestore.collection(getString(R.string.app_name)).document(userId).update(map).addOnCompleteListener(this, task -> {
             Toast.makeText(ProfileActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
             loadingProgress.dismissLoadingProgress();
         }).addOnFailureListener(this, e -> {
