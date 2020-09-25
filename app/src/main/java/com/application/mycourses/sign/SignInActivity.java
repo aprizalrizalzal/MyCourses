@@ -144,14 +144,14 @@ public class SignInActivity extends AppCompatActivity {
         password = edtPassword.getText().toString();
         loadingProgress.startLoadingProgress();
         firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(this, task -> {
+            loadingProgress.dismissLoadingProgress();
             startActivity(new Intent(getApplication(),MainNavActivity.class));
             Toast.makeText(this, getString(R.string.sign_in_successfully),Toast.LENGTH_SHORT).show();
             overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
-            loadingProgress.dismissLoadingProgress();
             finish();
         }).addOnFailureListener(this, e -> {
-            Toast.makeText(this, getString(R.string.sign_in_failed),Toast.LENGTH_SHORT).show();
             loadingProgress.dismissLoadingProgress();
+            Toast.makeText(this, getString(R.string.sign_in_failed),Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -159,10 +159,10 @@ public class SignInActivity extends AppCompatActivity {
         email = edtEmail.getText().toString();
         loadingProgress.startLoadingProgress();
         firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(this, task -> {
+            loadingProgress.dismissLoadingProgress();
             Toast.makeText(this, getString(R.string.cek_email),Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this,SignInActivity.class));
             overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
-            loadingProgress.dismissLoadingProgress();
             finish();
         }).addOnFailureListener(this, e ->{
             loadingProgress.dismissLoadingProgress();

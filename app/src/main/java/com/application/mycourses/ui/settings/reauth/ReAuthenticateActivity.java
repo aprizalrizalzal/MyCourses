@@ -54,7 +54,7 @@ public class ReAuthenticateActivity extends AppCompatActivity {
         CircleImageView imageViewAppBar = findViewById(R.id.imgAppBar);
         Glide.with(getApplication())
                 .load(R.mipmap.ic_launcher_round)
-                .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round).error(R.mipmap.ic_launcher_round))
+                .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
                 .into(imageViewAppBar);
         TextView appBar = findViewById(R.id.tvAppBar);
         appBar.setText(getText(R.string.verification));
@@ -63,13 +63,13 @@ public class ReAuthenticateActivity extends AppCompatActivity {
         int timeOfDay = welcome.get(Calendar.HOUR_OF_DAY);
 
         TextView run = findViewById(R.id.tvRun);
-        if (timeOfDay <12){
+        if (timeOfDay >=0 && timeOfDay <12){
             run.setText(getString(R.string.welcome,getString(R.string.morning)));
             run.setSelected(true);
-        } else if (timeOfDay >12 && timeOfDay <18){
+        } else if (timeOfDay >=12 && timeOfDay <18){
             run.setText(getString(R.string.welcome,getString(R.string.afternoon)));
             run.setSelected(true);
-        }else if (timeOfDay > 18) {
+        }else if (timeOfDay >=18 && timeOfDay <24) {
             run.setText(getString(R.string.welcome, getString(R.string.night)));
             run.setSelected(true);
         }

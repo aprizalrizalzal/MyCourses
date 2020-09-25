@@ -98,6 +98,8 @@
     <string name="number_phone">Number Phone</string>
     <string name="date_of_birth">Date of birth</string>
     <string name="gender">Gender</string>
+    <string name="last_seen">Last seen</string>
+    <string name="at">at</string>
     <string name="send_verify">The verification link for Email %s has been sent successfully.</string>
     <string name="send_verify_failed">The verification link for Email %s failed to send.</string>
     <string name="update_failed">Data Failed to update, try again</string>
@@ -149,7 +151,9 @@
     <string name="join_failed">Class failed to follow</string>
     <string name="not_edit_class">You are only allowed to share and delete classes. Classes can only be edited by teachers</string>
     <string name="name_class_list">ListClass</string>
-    <string name="member_class">MemberClass</string>
+    <string name="name_class_member">MemberClass</string>
     <string name="create_class">Please enter the correct and appropriate data</string>
     <string name="join_id_class">Please enter the intended class id code and if appropriate, please join</string>
+    <string name="online">Online</string>
+    <string name="users">Users</string>
 </resources>

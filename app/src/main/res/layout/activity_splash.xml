@@ -8,10 +8,10 @@
 
     <ImageView
         android:id="@+id/img_view"
-        android:layout_width="wrap_content"
+        android:layout_width="75dp"
         android:layout_height="75dp"
         android:contentDescription="@string/app_name"
-        android:src="@mipmap/ic_launcher"
+        android:src="@mipmap/ic_launcher_round"
         app:layout_constraintBottom_toBottomOf="@+id/tv_app_version"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

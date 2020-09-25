@@ -43,7 +43,6 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -60,7 +59,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileActivity extends AppCompatActivity {
 
     private SwipeRefreshLayout refreshLayout;
-    private FirebaseFirestore firebaseFirestore;
+    private FirebaseUser user;
+    private FirebaseFirestore firestore;
     private StorageReference storageReference;
     private StorageTask<UploadTask.TaskSnapshot> taskUpload;
     private CircleImageView imgAppBar,imgCover;
@@ -70,7 +70,7 @@ public class ProfileActivity extends AppCompatActivity {
     private static final int IMAGE_REQUEST = 1;
     private static final int IMAGE_REQUEST_INTENT = 2;
     private ImageButton btnAddCover,btnSaveCover;
-    private Button btnVerify,btnEdit,btnSave;
+    private Button btnVerify,btnSave;
     private AlertDialog.Builder dialogCalendarPicker;
     private LoadingProgress loadingProgress;
 
@@ -83,11 +83,11 @@ public class ProfileActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        firebaseFirestore = FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        firestore = FirebaseFirestore.getInstance();
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        storageReference = firebaseStorage.getReference(getString(R.string.app_name));
+        storageReference = firebaseStorage.getReference(getString(R.string.users));
 
         imgAppBar = findViewById(R.id.imgAppBar);
         TextView appBar = findViewById(R.id.tvAppBar);
@@ -127,10 +127,10 @@ public class ProfileActivity extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        readProfile(firebaseUser,firebaseFirestore);
+        readProfile(user,firestore);
 
         refreshLayout.setOnRefreshListener(() -> {
-            readProfile(firebaseUser,firebaseFirestore);
+            readProfile(user,firestore);
             refreshLayout.setRefreshing(false);
         });
 
@@ -142,34 +142,24 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        btnSaveCover.setOnClickListener(view -> uploadImage(firebaseUser,storageReference,firebaseFirestore));
+        btnSaveCover.setOnClickListener(view -> uploadImage(user,firestore,storageReference));
 
         btnVerify = findViewById(R.id.btnVerify);
         btnVerify.setOnClickListener(view -> {
-            if (firebaseUser != null) {
+            if (user != null) {
                 loadingProgress.startLoadingProgress();
-                firebaseUser.sendEmailVerification().addOnSuccessListener(this, aVoid -> {
-                    Toast.makeText(this,getString(R.string.send_verify,firebaseUser.getEmail()),Toast.LENGTH_SHORT).show();
-                    firebaseAuth.signOut();
+                user.sendEmailVerification().addOnSuccessListener(this, aVoid -> {
+                    Toast.makeText(this,getString(R.string.send_verify,user.getEmail()),Toast.LENGTH_SHORT).show();
+                    auth.signOut();
                     startActivity(new Intent(this, SignInActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
                     loadingProgress.dismissLoadingProgress();
                     finish();
                 }).addOnFailureListener(this, e -> {
-                    Toast.makeText(this,getString(R.string.send_verify_failed,firebaseUser.getEmail()),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,getString(R.string.send_verify_failed,user.getEmail()),Toast.LENGTH_SHORT).show();
                     loadingProgress.dismissLoadingProgress();
                 });
             }
-        });
-
-        btnEdit = findViewById(R.id.btnUpdate);
-        btnEdit.setOnClickListener(view -> {
-            edtUserName.setEnabled(true);
-            edtGender.setEnabled(true);
-            edtBirth.setEnabled(true);
-            edtNumberPhone.setEnabled(true);
-            btnSave.setVisibility(View.VISIBLE);
-            btnEdit.setVisibility(View.GONE);
         });
 
         edtGender.setInputType(InputType.TYPE_NULL);
@@ -198,8 +188,8 @@ public class ProfileActivity extends AppCompatActivity {
                 if (!validUserName()||!validGender()||!validBirth()||!validNumberPhone()){
                     return;
                 }
-                if (firebaseUser != null) {
-                    saveProfile(firebaseUser,firebaseFirestore);
+                if (user != null) {
+                    saveProfile(user,firestore);
                 }
             }else {
                 Toast.makeText(ProfileActivity.this,getText(R.string.not_have_connection),Toast.LENGTH_SHORT).show();
@@ -210,24 +200,25 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser != null && firebaseUser.isEmailVerified()) {
+        emailVerify(user,firestore);
+    }
+
+    private void emailVerify(FirebaseUser user, FirebaseFirestore firestore) {
+        userId = user.getUid();
+        if (user.isEmailVerified()) {
             Map<String, Object> map = new HashMap<>();
             map.put("emailVerify", true);
-            firebaseFirestore.collection(getString(R.string.app_name)).document(userId).update(map);
+            firestore.collection(getString(R.string.users)).document(userId).update(map);
         }
     }
 
-    private void readProfile(FirebaseUser firebaseUser, FirebaseFirestore firebaseFirestore) {
-        if (firebaseUser != null) {
-            userId = firebaseUser.getUid();
-            DocumentReference documentReference = firebaseFirestore.collection(getString(R.string.app_name)).document(userId);
-            documentReference.addSnapshotListener((value, error) -> {
-                if (value !=null && value.exists()){
-                    ModelUser modelUser = value.toObject(ModelUser.class);
-                    assert modelUser != null;
-
-                    if (modelUser.getUrlPicture().equals("urlPicture")){
+    private void readProfile(FirebaseUser user, FirebaseFirestore firestore) {
+        userId = user.getUid();
+        firestore.collection(getString(R.string.users)).document(userId).addSnapshotListener((value, error) -> {
+            if (value != null) {
+                ModelUser modelUser = value.toObject(ModelUser.class);
+                if (modelUser != null) {
+                    if (modelUser.getUrlPicture().equals("")){
                         Glide.with(getApplication())
                                 .load(R.mipmap.ic_launcher_round)
                                 .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
@@ -246,7 +237,6 @@ public class ProfileActivity extends AppCompatActivity {
                                 .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
                                 .into(imgCover);
                     }
-
                     edtUserName.setText(modelUser.getUserName());
                     edtGender.setText(modelUser.getGender());
                     edtBirth.setText(modelUser.getBirth());
@@ -255,18 +245,13 @@ public class ProfileActivity extends AppCompatActivity {
                     if (modelUser.getEmailVerify().equals(false)){
                         edtEmail.setText(getString(R.string.not_email_verified));
                     }else {
-                        btnEdit.setVisibility(View.VISIBLE);
                         btnVerify.setVisibility(View.GONE);
+                        btnSave.setVisibility(View.VISIBLE);
                         edtEmail.setText(modelUser.getEmail());
                     }
-                    btnSave.setVisibility(View.GONE);
-                    edtUserName.setEnabled(false);
-                    edtGender.setEnabled(false);
-                    edtBirth.setEnabled(false);
-                    edtNumberPhone.setEnabled(false);
                 }
-            });
-        }
+            }
+        });
     }
     private void selectImage() {
         Intent intent = new Intent();
@@ -291,10 +276,10 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadImage(FirebaseUser firebaseUser, StorageReference storageReference, FirebaseFirestore firebaseFirestore) {
+    private void uploadImage(FirebaseUser user, FirebaseFirestore firestore, StorageReference storageReference) {
         loadingProgress.startLoadingProgress();
         if (uriImage != null) {
-            userId = firebaseUser.getUid();
+            userId = user.getUid();
             StorageReference fileReference = storageReference.child("urlPicture").child(userId + "." + getFileExtension(uriImage));
             taskUpload = fileReference.putFile(uriImage);
             taskUpload.continueWithTask(task -> {
@@ -312,7 +297,7 @@ public class ProfileActivity extends AppCompatActivity {
                 Map<String, Object> map = new HashMap<>();
                 map.put("urlPicture", myUri);
 
-                firebaseFirestore.collection(getString(R.string.app_name)).document(userId).update(map);
+                firestore.collection(getString(R.string.users)).document(userId).update(map);
                 Toast.makeText(ProfileActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
 
                 btnAddCover.setVisibility(View.VISIBLE);
@@ -348,16 +333,9 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void saveProfile(FirebaseUser firebaseUser, FirebaseFirestore firebaseFirestore) {
+    private void saveProfile(FirebaseUser user, FirebaseFirestore firestore) {
 
         loadingProgress.startLoadingProgress();
-
-        edtUserName.setEnabled(false);
-        edtGender.setEnabled(false);
-        edtBirth.setEnabled(false);
-        edtNumberPhone.setEnabled(false);
-        btnSave.setVisibility(View.GONE);
-        btnEdit.setVisibility(View.VISIBLE);
 
         userName = edtUserName.getText().toString();
         gender= edtGender.getText().toString();
@@ -370,8 +348,8 @@ public class ProfileActivity extends AppCompatActivity {
         map.put("birth",birth);
         map.put("numberPhone",numberPhone);
 
-        userId=firebaseUser.getUid();
-        firebaseFirestore.collection(getString(R.string.app_name)).document(userId).update(map).addOnCompleteListener(this, task -> {
+        userId=user.getUid();
+        firestore.collection(getString(R.string.users)).document(userId).update(map).addOnCompleteListener(this, task -> {
             Toast.makeText(ProfileActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
             loadingProgress.dismissLoadingProgress();
         }).addOnFailureListener(this, e -> {

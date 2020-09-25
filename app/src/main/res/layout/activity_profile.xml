@@ -105,7 +105,6 @@
                             android:layout_height="wrap_content"
                             android:autofillHints="@string/name"
                             android:drawableEnd="@drawable/ic_baseline_person"
-                            android:enabled="false"
                             android:hint="@string/name"
                             android:inputType="text"
                             android:textSize="14sp" />
@@ -116,7 +115,6 @@
                             android:layout_height="wrap_content"
                             android:autofillHints="@string/name"
                             android:drawableEnd="@drawable/ic_baseline_supervised_user_circle"
-                            android:enabled="false"
                             android:hint="@string/gender"
                             android:inputType="text"
                             android:textSize="14sp" />
@@ -143,7 +141,6 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="@string/name"
                         android:drawableEnd="@drawable/ic_baseline_event"
-                        android:enabled="false"
                         android:hint="@string/date_of_birth"
                         android:inputType="date"
                         android:textSize="14sp" />
@@ -153,7 +150,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableEnd="@drawable/ic_baseline_call"
-                        android:enabled="false"
                         android:inputType="phone"
                         android:hint="@string/number_phone"
                         android:textSize="14sp"
@@ -164,8 +160,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableEnd="@drawable/ic_baseline_email"
-                        android:enabled="false"
                         android:inputType="textEmailAddress"
+                        android:enabled="false"
                         android:hint="@string/email"
                         android:textSize="14sp"
                         android:autofillHints="@string/email" />
@@ -179,17 +175,6 @@
                         android:textSize="16sp"
                         android:text="@string/verification"
                         android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse" />
-
-                    <Button
-                        android:id="@+id/btnUpdate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/activity_horizontal_margin"
-                        android:background="@drawable/bg_click_btn"
-                        android:textSize="16sp"
-                        android:text="@string/update"
-                        android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
-                        android:visibility="gone"/>
 
                     <Button
                         android:id="@+id/btnSave"

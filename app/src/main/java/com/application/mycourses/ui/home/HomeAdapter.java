@@ -112,12 +112,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             if (modelHome.getUrlCover().equals("urlCover")){
                 Glide.with(contextHome)
                         .load(R.mipmap.ic_launcher_round)
-                        .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round).error(R.mipmap.ic_launcher))
+                        .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
                         .into(imgViewHome);
             } else {
                 Glide.with(contextHome)
                         .load(modelHome.getUrlCover())
-                        .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round).error(R.mipmap.ic_launcher))
+                        .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
                         .into(imgViewHome);
             }
 

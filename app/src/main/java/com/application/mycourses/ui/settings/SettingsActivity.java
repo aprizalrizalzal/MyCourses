@@ -73,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
         CircleImageView imageViewAppBar = findViewById(R.id.imgAppBar);
         Glide.with(getApplication())
                 .load(R.mipmap.ic_launcher_round)
-                .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round).error(R.mipmap.ic_launcher_round))
+                .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
                 .into(imageViewAppBar);
         TextView appBarMain = findViewById(R.id.tvAppBar);
         appBarMain.setText(getString(R.string.action_settings));
@@ -115,8 +115,8 @@ public class SettingsActivity extends AppCompatActivity {
     public static class SettingsFragment extends PreferenceFragmentCompat {
         private static final int MY_REQUEST_CODE = 99;
         private LoadingProgress loadingProgress;
-        private FirebaseAuth firebaseAuth;
-        private FirebaseFirestore firebaseFirestore;
+        private FirebaseAuth auth;
+        private FirebaseFirestore firestore;
 
         @SuppressLint("UseCompatLoadingForDrawables")
         @Override
@@ -124,9 +124,9 @@ public class SettingsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
             loadingProgress = new LoadingProgress(requireActivity());
-            firebaseAuth = FirebaseAuth.getInstance();
-            FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-            firebaseFirestore = FirebaseFirestore.getInstance();
+            auth = FirebaseAuth.getInstance();
+            FirebaseUser user = auth.getCurrentUser();
+            firestore = FirebaseFirestore.getInstance();
 
             final SwitchPreferenceCompat lockAccount = findPreference(getString(R.string.lock_account));
             final Preference deleteAccount = findPreference(getString(R.string.delete_account));
@@ -166,7 +166,7 @@ public class SettingsActivity extends AppCompatActivity {
                         .setMessage(getString(R.string.next_delete_account))
                         .setCancelable(false)
                         .setPositiveButton(R.string.yes, (dialog, id) -> {
-                            if (firebaseUser !=null){
+                            if (user !=null){
                                 startActivity(new Intent(requireActivity(), ReAuthenticateActivity.class));
                                 requireActivity().overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
                                 requireActivity().finish();
@@ -182,8 +182,8 @@ public class SettingsActivity extends AppCompatActivity {
             assert signOutAccount != null;
             signOutAccount.setOnPreferenceClickListener(preference -> {
                 if (haveConnection()){
-                    userSignOut(firebaseAuth,firebaseFirestore);
-                    firebaseAuth.signOut();
+                    userSignOut(auth,firestore);
+                    auth.signOut();
                     Toast.makeText(requireActivity(),getText(R.string.sign_out) ,Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(requireActivity(), SignInActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     requireActivity().overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
@@ -238,7 +238,7 @@ public class SettingsActivity extends AppCompatActivity {
             return netInfo != null && netInfo.isConnectedOrConnecting();
         }
 
-        private void userSignOut(FirebaseAuth firebaseAuth, FirebaseFirestore firebaseFirestore) {
+        private void userSignOut(FirebaseAuth firebaseAuth, FirebaseFirestore firestore) {
             FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
             if (firebaseUser != null) {
                 String userId = firebaseUser.getUid();
@@ -259,7 +259,7 @@ public class SettingsActivity extends AppCompatActivity {
                 map.put("lastDate", saveCurrencyDate);
                 map.put("lastTime",saveCurrencyTime);
 
-                firebaseFirestore.collection(getString(R.string.app_name)).document(userId).update(map);
+                firestore.collection(getString(R.string.users)).document(userId).update(map);
             }
         }
 

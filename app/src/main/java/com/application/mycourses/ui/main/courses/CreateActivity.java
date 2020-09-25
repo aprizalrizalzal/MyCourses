@@ -3,7 +3,6 @@ package com.application.mycourses.ui.main.courses;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.preference.ListPreference;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -26,21 +25,15 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -50,7 +43,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CreateActivity extends AppCompatActivity {
 
     private EditText edtUni,edtFac,edtStud,edtSem,edtCour;
-    private String university,faculty,study,semester,courses;
+    private String userId,university,faculty,study,semester,courses;
     private LoadingProgress loadingProgress;
 
     @Override
@@ -62,8 +55,8 @@ public class CreateActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
 
         CircleImageView imageViewAppBar = findViewById(R.id.imgAppBar);
         Glide.with(getApplication())
@@ -94,25 +87,25 @@ public class CreateActivity extends AppCompatActivity {
         Button btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(view -> {
             if (haveConnection()){
-                if (firebaseUser != null) {
-                    createClass(firebaseUser,database);
+                if (user != null) {
+                    createClass(user,database);
                 }
             } else {
                 Snackbar.make(btnSave, getString(R.string.not_have_connection), BaseTransientBottomBar.LENGTH_INDEFINITE )
-                        .setAction(getString(R.string.retry),viewRetry -> createClass(firebaseUser,database))
+                        .setAction(getString(R.string.retry),viewRetry -> createClass(user,database))
                         .show();
             }
         });
     }
 
-    private void createClass(FirebaseUser firebaseUser, FirebaseDatabase database) {
+    private void createClass(FirebaseUser user, FirebaseDatabase database) {
         if (haveConnection()) {
             if (!validateUni() || !validateFac() || !validateStud() || !validateSem() || !validateCour()) {
                 return;
             }
             loadingProgress.startLoadingProgress();
 
-            String userId = firebaseUser.getUid();
+            userId = user.getUid();
             String saveCurrencyDate, saveCurrencyTime;
             university = edtUni.getText().toString().toUpperCase();
             faculty = edtFac.getText().toString().toUpperCase();
@@ -130,10 +123,10 @@ public class CreateActivity extends AppCompatActivity {
             saveCurrencyTime = timeFormat.format(calendar.getTime());
 
             String dateCreated = String.format("%s at %s", saveCurrencyDate, saveCurrencyTime);
-            String uniqueID = UUID.randomUUID().toString().substring(0, 8);
+            String idClass = UUID.randomUUID().toString().substring(0, 8);
 
             Map<String, Object> map = new HashMap<>();
-            map.put("classId", uniqueID);
+            map.put("classId", idClass);
             map.put("courses", courses);
             map.put("dateCreated", dateCreated);
             map.put("faculty", faculty);
@@ -142,27 +135,17 @@ public class CreateActivity extends AppCompatActivity {
             map.put("university", university);
             map.put("urlCover", "urlCover");
             map.put("userId", userId);
+            database.getReference(getString(R.string.name_class)).child(idClass).setValue(map).addOnCompleteListener(this, task -> {
 
-            database.getReference(getString(R.string.name_class)).child(userId).child(uniqueID).setValue(map).addOnCompleteListener(this, task -> {
                 Map<String, Object> mapClass = new HashMap<>();
-                mapClass.put("classId", uniqueID);
-                mapClass.put("userId", userId);
+                mapClass.put("status", "Owner");
+                database.getReference(getString(R.string.name_class)).child(idClass).child(getString(R.string.name_class_member)).child(userId).updateChildren(mapClass).addOnCompleteListener(this, taskClass -> {
 
-                database.getReference(getString(R.string.name_class_list)).child(uniqueID).setValue(mapClass).addOnCompleteListener(this, taskClass -> {
-                    Map<String, Object> member = new HashMap<>();
-                    member.put("userId", userId);
-                    member.put("status", "Owner");
-
-                    database.getReference(getString(R.string.member_class)).child(uniqueID).child(userId).setValue(member).addOnCompleteListener(this, taskMember -> {
-                        Toast.makeText(CreateActivity.this, R.string.data_update, Toast.LENGTH_SHORT).show();
-                        loadingProgress.dismissLoadingProgress();
-                        startActivity(new Intent(CreateActivity.this, MainNavActivity.class));
-                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                        finish();
-                    }).addOnFailureListener(this, e -> {
-                        Toast.makeText(CreateActivity.this, getText(R.string.update_failed), Toast.LENGTH_SHORT).show();
-                        loadingProgress.dismissLoadingProgress();
-                    });
+                Toast.makeText(CreateActivity.this, R.string.data_update, Toast.LENGTH_SHORT).show();
+                loadingProgress.dismissLoadingProgress();
+                startActivity(new Intent(CreateActivity.this, MainNavActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                finish();
 
                 }).addOnFailureListener(this, e -> {
                     Toast.makeText(CreateActivity.this, getText(R.string.update_failed), Toast.LENGTH_SHORT).show();

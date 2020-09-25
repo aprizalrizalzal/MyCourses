@@ -28,6 +28,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
@@ -39,9 +40,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private FirebaseAuth firebaseAuth;
-    private FirebaseUser firebaseUser;
-    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private FirebaseFirestore firestore;
     private EditText edtEmail,edtPassword,edtConfirmPassword;
     private CheckBox checkBoxStatus;
     private Button btnSignUp;
@@ -87,8 +88,8 @@ public class SignUpActivity extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseFirestore = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
 
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
@@ -115,7 +116,7 @@ public class SignUpActivity extends AppCompatActivity {
                 if (!validEmail()||!validPassword()||!validConfirmPassword()){
                     return;
                 }
-                userSignUp(firebaseAuth,firebaseFirestore);
+                userSignUp(auth,firestore);
             } else {
                 Toast.makeText(this, getString(R.string.not_have_connection),Toast.LENGTH_SHORT).show();
             }
@@ -129,37 +130,37 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
-    private void userSignUp(FirebaseAuth firebaseAuth, FirebaseFirestore firebaseFirestore) {
+    private void userSignUp(FirebaseAuth auth, FirebaseFirestore firestore) {
         email = edtEmail.getText().toString();
         password = edtPassword.getText().toString();
         loadingProgress.startLoadingProgress();
-        firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, task -> {
-            firebaseUser = firebaseAuth.getCurrentUser();
-            if (firebaseUser != null) {
-                userId = firebaseUser.getUid();
+        auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, task -> {
+            user = auth.getCurrentUser();
+            if (user != null) {
+                userId = user.getUid();
 
                 Map<String,Object> map = new HashMap<>();
-                map.put("userName","userName");
+                map.put("userName","");
                 map.put("userId",userId);
                 map.put("userSignIn",false);
                 map.put("email",email);
                 map.put("emailVerify",false);
-                map.put("urlPicture","urlPicture");
+                map.put("urlPicture","");
 
-                firebaseFirestore.collection(getString(R.string.app_name)).document(userId).set(map).addOnSuccessListener(this, fVoid -> {
+                firestore.collection(getString(R.string.users)).document(userId).set(map).addOnCompleteListener(this, taskUser -> {
+                    loadingProgress.dismissLoadingProgress();
                     startActivity(new Intent(this,SignInActivity.class));
                     Toast.makeText(this,getString(R.string.sign_up_successfully),Toast.LENGTH_SHORT).show();
                     overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
-                    loadingProgress.dismissLoadingProgress();
                     finish();
                 }).addOnFailureListener(this, e ->{
-                    Toast.makeText(this,getString(R.string.data_failed),Toast.LENGTH_SHORT).show();
                     loadingProgress.dismissLoadingProgress();
+                    Toast.makeText(this,getString(R.string.data_failed),Toast.LENGTH_SHORT).show();
                 });
             }
         }).addOnFailureListener(this, e -> {
-            Toast.makeText(this,getString(R.string.auth_failed),Toast.LENGTH_SHORT).show();
             loadingProgress.dismissLoadingProgress();
+            Toast.makeText(this,getString(R.string.auth_failed),Toast.LENGTH_SHORT).show();
         });
     }
 

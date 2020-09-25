@@ -216,7 +216,8 @@ public class CoursesActivity extends AppCompatActivity {
 
         database.getReference(getString(R.string.name_class)).child(userId).child(idClass).updateChildren(map).addOnCompleteListener(this, task -> {
             loadingProgress.dismissLoadingProgress();
-            database.getReference(getString(R.string.member_class)).child(idClass).addListenerForSingleValueEvent(new ValueEventListener() {
+            uploadImage(firebaseUser,database,storageReference,idClass);
+            database.getReference(getString(R.string.name_class_member)).child(idClass).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()){
@@ -225,7 +226,6 @@ public class CoursesActivity extends AppCompatActivity {
                             String userIdMember = modelHome.getUserId();
                             loadingProgress.dismissLoadingProgress();
                             memberClassUpdate(userIdMember,idClass,database,urlCover);
-                            uploadImage(firebaseUser,userIdMember,database,storageReference,idClass);
                         }
                     }
                 }
@@ -238,7 +238,26 @@ public class CoursesActivity extends AppCompatActivity {
         }).addOnFailureListener(this, e -> {
             Toast.makeText(CoursesActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
             loadingProgress.dismissLoadingProgress();
+        });
+    }
 
+    private void memberClassUpdate(String userIdMember, String idClass, FirebaseDatabase database, String urlCover) {
+
+        loadingProgress.startLoadingProgress();
+        Map<String, Object> map = new HashMap<>();
+        map.put("courses",courses);
+        map.put("faculty",faculty);
+        map.put("semester",semester);
+        map.put("study",study);
+        map.put("university",university);
+        map.put("urlCover",urlCover);
+
+        database.getReference(getString(R.string.name_class)).child(userIdMember).child(idClass).updateChildren(map).addOnCompleteListener(this, task -> {
+            loadingProgress.dismissLoadingProgress();
+            Toast.makeText(CoursesActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(this, e -> {
+            loadingProgress.dismissLoadingProgress();
+            Toast.makeText(CoursesActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -266,7 +285,7 @@ public class CoursesActivity extends AppCompatActivity {
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private void uploadImage(FirebaseUser firebaseUser, String userIdMember, FirebaseDatabase database, StorageReference storageReference, String idClass) {
+    private void uploadImage(FirebaseUser firebaseUser, FirebaseDatabase database, StorageReference storageReference, String idClass) {
 
         loadingProgress.startLoadingProgress();
         if (uriImage != null) {
@@ -287,59 +306,30 @@ public class CoursesActivity extends AppCompatActivity {
                 map.put("urlCover", myUri);
 
                 database.getReference(getString(R.string.name_class)).child(userId).child(idClass).updateChildren(map).addOnCompleteListener(this, taskUpdate -> {
+                    loadingProgress.dismissLoadingProgress();
+                    Toast.makeText(CoursesActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
 
-                    Map<String, Object> member = new HashMap<>();
-                    member.put("urlCover", myUri);
-
-                    database.getReference(getString(R.string.name_class)).child(userIdMember).child(idClass).updateChildren(member).addOnCompleteListener(taskMember -> {
-                        Toast.makeText(CoursesActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
-                        loadingProgress.dismissLoadingProgress();
-                        startActivity(new Intent(CoursesActivity.this, MainNavActivity.class));
-                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                        finish();
-
-                    }).addOnFailureListener(this, e -> {
-                        Toast.makeText(CoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
-                        loadingProgress.dismissLoadingProgress();
-                    });
+                    startActivity(new Intent(CoursesActivity.this, MainNavActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    finish();
 
                 }).addOnFailureListener(this, e -> {
-                    Toast.makeText(CoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
                     loadingProgress.dismissLoadingProgress();
+                    Toast.makeText(CoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
                 });
 
             }).addOnFailureListener(this, e -> {
-                Toast.makeText(CoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
                 loadingProgress.dismissLoadingProgress();
+                Toast.makeText(CoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
             });
 
         } else {
-            Snackbar.make(imgCover, getString(R.string.no_image_upload), BaseTransientBottomBar.LENGTH_INDEFINITE).setAction(getString(R.string.yes), null).show();
             loadingProgress.dismissLoadingProgress();
-            startActivity(new Intent(CoursesActivity.this, MainNavActivity.class));
+            Snackbar.make(imgCover, getString(R.string.no_image_upload), BaseTransientBottomBar.LENGTH_SHORT).setAction(getString(R.string.yes), null).show();
+            startActivity(new Intent(CoursesActivity.this, MainNavActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
             finish();
         }
-    }
-
-    private void memberClassUpdate(String userIdMember, String idClass, FirebaseDatabase database, String urlCover) {
-
-        loadingProgress.startLoadingProgress();
-        Map<String, Object> map = new HashMap<>();
-        map.put("courses",courses);
-        map.put("faculty",faculty);
-        map.put("semester",semester);
-        map.put("study",study);
-        map.put("university",university);
-        map.put("urlCover",urlCover);
-
-        database.getReference(getString(R.string.name_class)).child(userIdMember).child(idClass).updateChildren(map).addOnCompleteListener(this, task -> {
-            Toast.makeText(CoursesActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
-            loadingProgress.dismissLoadingProgress();
-        }).addOnFailureListener(this, e -> {
-            Toast.makeText(CoursesActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
-            loadingProgress.dismissLoadingProgress();
-        });
     }
 
     @Override

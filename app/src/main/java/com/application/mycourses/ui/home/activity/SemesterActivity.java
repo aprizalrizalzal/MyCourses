@@ -49,7 +49,7 @@ public class SemesterActivity extends AppCompatActivity {
         if (urlCover != null) {
             if (urlCover.equals("urlCover")){
                 Glide.with(getApplication())
-                        .load(R.mipmap.ic_launcher)
+                        .load(R.mipmap.ic_launcher_round)
                         .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
                         .into(imgAppBar);
             } else {

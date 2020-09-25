@@ -9,6 +9,7 @@ public class ModelUser {
     private String email;
     private Boolean emailVerify;
     private String idClass;
+    private String status;
     private Boolean userSignIn;
     private String urlPicture;
     private Boolean userOnline;
@@ -18,7 +19,7 @@ public class ModelUser {
     public ModelUser() {
     }
 
-    public ModelUser(String userId, String userName, String gender, String birth, String numberPhone, String email, Boolean emailVerify, String idClass, Boolean userSignIn, String urlPicture, Boolean userOnline, String lastDate, String lastTime) {
+    public ModelUser(String userId, String userName, String gender, String birth, String numberPhone, String email, Boolean emailVerify, String idClass, String status, Boolean userSignIn, String urlPicture, Boolean userOnline, String lastDate, String lastTime) {
         this.userId = userId;
         this.userName = userName;
         this.gender = gender;
@@ -27,6 +28,7 @@ public class ModelUser {
         this.email = email;
         this.emailVerify = emailVerify;
         this.idClass = idClass;
+        this.status = status;
         this.userSignIn = userSignIn;
         this.urlPicture = urlPicture;
         this.userOnline = userOnline;
@@ -64,6 +66,10 @@ public class ModelUser {
 
     public String getIdClass() {
         return idClass;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public Boolean getUserSignIn() {

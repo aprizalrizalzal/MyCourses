@@ -4,13 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,8 +34,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +46,7 @@ public class JoinActivity extends AppCompatActivity {
     private LinearLayout result;
     private EditText edtClassId;
     private TextView tvUni,tvFac,tvStud,tvSem,tvCour;
-    private String classId;
+    private String idClass;
     private LoadingProgress loadingProgress;
 
     @Override
@@ -68,8 +64,8 @@ public class JoinActivity extends AppCompatActivity {
         adView.loadAd(adRequest);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
 
         TextView run = findViewById(R.id.tvRun);
         run.setText(getString(R.string.join_id_class));
@@ -98,33 +94,32 @@ public class JoinActivity extends AppCompatActivity {
         Button btnSearch = findViewById(R.id.btnSearch);
         btnSearch.setOnClickListener(view -> {
             if (haveConnection()){
-                if (firebaseUser != null) {
-                    searchClass(firebaseUser,database);
+                if (user != null) {
+                    searchClass(user,database);
                 }
             } else {
                 Snackbar.make(btnSearch, getString(R.string.not_have_connection), BaseTransientBottomBar.LENGTH_INDEFINITE )
-                        .setAction(getString(R.string.retry),viewRetry -> searchClass(firebaseUser,database))
+                        .setAction(getString(R.string.retry),viewRetry -> searchClass(user,database))
                         .show();
             }
         });
 
     }
 
-    private void searchClass(FirebaseUser firebaseUser,FirebaseDatabase database) {
+    private void searchClass(FirebaseUser user,FirebaseDatabase database) {
         if (!validateClassId()){
             return;
         }
-        classId = edtClassId.getText().toString();
-        database.getReference(getString(R.string.name_class_list)).child(classId).addListenerForSingleValueEvent(new ValueEventListener() {
+        idClass = edtClassId.getText().toString();
+        database.getReference(getString(R.string.name_class)).child(idClass).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
                     ModelHome modelHome = snapshot.getValue(ModelHome.class);
-                    if (modelHome !=null && modelHome.getClassId().equals(classId)){
+                    if (modelHome !=null && modelHome.getClassId().equals(idClass)){
                         Toast.makeText(JoinActivity.this, getString(R.string.id_class_found), Toast.LENGTH_SHORT).show();
                         String idClass = modelHome.getClassId();
-                        String idUser = modelHome.getUserId();
-                        idClassFound(firebaseUser,database,idUser,idClass);
+                        idClassFound(user,database,idClass);
                     }
                 } else {
                     Toast.makeText(JoinActivity.this, getString(R.string.id_class_not_found), Toast.LENGTH_SHORT).show();
@@ -137,13 +132,13 @@ public class JoinActivity extends AppCompatActivity {
         });
     }
 
-    private void idClassFound(FirebaseUser firebaseUser, FirebaseDatabase database, String idUser, String idClass) {
-        database.getReference(getString(R.string.name_class)).child(idUser).child(idClass).addListenerForSingleValueEvent(new ValueEventListener() {
+    private void idClassFound(FirebaseUser user, FirebaseDatabase database, String idClass) {
+        database.getReference(getString(R.string.name_class)).child(idClass).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ModelHome modelHome = snapshot.getValue(ModelHome.class);
                 if (modelHome != null) {
-                    if (modelHome.getUrlCover().equals("urlPicture")){
+                    if (modelHome.getUrlCover().equals("")){
                         Glide.with(getApplication())
                                 .load(R.mipmap.ic_launcher_round)
                                 .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
@@ -164,10 +159,10 @@ public class JoinActivity extends AppCompatActivity {
 
                     btnJoin.setOnClickListener(view -> {
                         if (haveConnection()){
-                            joinClass(firebaseUser,idUser,idClass,database,modelHome);
+                            joinClass(user,idClass,database,modelHome);
                         } else {
                             Snackbar.make(btnJoin, getString(R.string.not_have_connection), BaseTransientBottomBar.LENGTH_INDEFINITE )
-                                    .setAction(getString(R.string.retry),viewRetry -> searchClass(firebaseUser,database))
+                                    .setAction(getString(R.string.retry),viewRetry -> searchClass(user,database))
                                     .show();
                         }
                     });
@@ -182,62 +177,25 @@ public class JoinActivity extends AppCompatActivity {
 
     }
 
-    private void joinClass(FirebaseUser firebaseUser, String idUser, String idClass, FirebaseDatabase database, ModelHome modelHome) {
+    private void joinClass(FirebaseUser user, String idClass, FirebaseDatabase database, ModelHome modelHome) {
+
         loadingProgress.startLoadingProgress();
+        String userId = user.getUid();
+        Map<String, Object> mapClass = new HashMap<>();
+        mapClass.put("status", "Member");
+        database.getReference(getString(R.string.name_class)).child(idClass).child(getString(R.string.name_class_member)).child(userId).updateChildren(mapClass).addOnCompleteListener(this, taskClass -> {
 
-        classId = edtClassId.getText().toString();
-        String saveCurrencyDate, saveCurrencyTime;
-        String university = modelHome.getUniversity();
-        String faculty = modelHome.getFaculty();
-        String semester = modelHome.getSemester();
-        String study = modelHome.getStudy();
-        String courses = modelHome.getCourses();
-        String urlCover = modelHome.getUrlCover();
-
-        Calendar calendar = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy");
-        saveCurrencyDate = dateFormat.format(calendar.getTime());
-
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        saveCurrencyTime = timeFormat.format(calendar.getTime());
-
-        String dateJoin = String.format("%s at %s",saveCurrencyDate,saveCurrencyTime);
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("courses", courses);
-        map.put("dateJoin", dateJoin);
-        map.put("faculty", faculty);
-        map.put("classId",classId);
-        map.put("semester", semester);
-        map.put("study", study);
-        map.put("university", university);
-        map.put("urlCover",urlCover);
-        map.put("userId",idUser);
-
-        String userId = firebaseUser.getUid();
-        database.getReference(getString(R.string.name_class)).child(userId).child(idClass).setValue(map).addOnCompleteListener(this, task -> {
-
-            Map<String, Object> member = new HashMap<>();
-            member.put("userId",userId);
-            member.put("status","Member");
-
-            database.getReference(getString(R.string.member_class)).child(classId).child(userId).setValue(member).addOnCompleteListener(this, taskMember -> {
-                loadingProgress.dismissLoadingProgress();
-                Toast.makeText(JoinActivity.this, R.string.join_class,Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(JoinActivity.this, MainNavActivity.class));
-                overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
-                finish();
-            }).addOnFailureListener(this, e -> {
-                Toast.makeText(JoinActivity.this,getText(R.string.join_failed),Toast.LENGTH_SHORT).show();
-                loadingProgress.dismissLoadingProgress();
-            });
+            loadingProgress.dismissLoadingProgress();
+            Toast.makeText(JoinActivity.this, R.string.join_class,Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(JoinActivity.this, MainNavActivity.class));
+            overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+            finish();
 
         }).addOnFailureListener(this, e -> {
             Toast.makeText(JoinActivity.this,getText(R.string.join_failed),Toast.LENGTH_SHORT).show();
             loadingProgress.dismissLoadingProgress();
         });
+
     }
 
     private boolean haveConnection(){
@@ -248,8 +206,8 @@ public class JoinActivity extends AppCompatActivity {
     }
 
     private boolean validateClassId(){
-        classId = edtClassId.getText().toString();
-        if (classId.isEmpty()){
+        idClass = edtClassId.getText().toString();
+        if (idClass.isEmpty()){
             edtClassId.setError(getString(R.string.field_not_empty));
             return false;
         } else {

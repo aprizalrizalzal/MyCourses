@@ -33,7 +33,6 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
@@ -56,8 +55,8 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
 
     private DrawerLayout drawer;
     private FloatingActionButton fab,imgBtnHelp,imgBtnCreate,imgBtnJoin;
-    private FirebaseAuth firebaseAuth;
-    private FirebaseFirestore firebaseFirestore;
+    private FirebaseUser user;
+    private FirebaseFirestore firestore;
     private TextView appBarMain;
     private CircleImageView imgViewUserNav;
     private TextView userNameNav, emailNav;
@@ -77,9 +76,9 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
 
         appBarMain=findViewById(R.id.tvAppBarMain);
 
-        firebaseAuth=FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser=firebaseAuth.getCurrentUser();
-        firebaseFirestore=FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        firestore = FirebaseFirestore.getInstance();
 
         MobileAds.initialize(this, initializationStatus -> {
         });
@@ -89,8 +88,11 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
 
         fab = findViewById(R.id.fab);
         imgBtnCreate = findViewById(R.id.fabCreate);
+        imgBtnCreate.hide();
         imgBtnJoin = findViewById(R.id.fabJoin);
+        imgBtnJoin.hide();
         imgBtnHelp = findViewById(R.id.fabHelp);
+        imgBtnHelp.hide();
 
         fab.setOnClickListener(view -> {
             if (!isFabOpen){
@@ -172,14 +174,13 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
         userNameNav = navHeaderView.findViewById(R.id.tvUserNameNav);
         emailNav = navHeaderView.findViewById(R.id.tvEmailNav);
 
-        if (firebaseUser != null) {
-            userId=firebaseUser.getUid();
-            DocumentReference documentReference = firebaseFirestore.collection(getString(R.string.app_name)).document(userId);
-            documentReference.addSnapshotListener((value, error) -> {
-                if (value !=null && value.exists()){
+        if (user != null) {
+            userId=user.getUid();
+            firestore.collection(getString(R.string.users)).document(userId).addSnapshotListener((value, error) -> {
+                if (value != null) {
                     ModelUser modelUser = value.toObject(ModelUser.class);
-                    if (modelUser != null) {
-                        if (modelUser.getUrlPicture().equals("urlPicture")){
+                    if (modelUser !=null){
+                        if (modelUser.getUrlPicture().equals("")){
                             Glide.with(getApplication())
                                     .load(R.mipmap.ic_launcher_round)
                                     .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
@@ -191,7 +192,7 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
                                     .into(imgViewUserNav);
                         }
 
-                        if (modelUser.getUserName().equals("userName")){
+                        if (modelUser.getUserName().equals("")){
                             appBarMain.setText(getString(R.string.update_your_profile));
                             userNameNav.setText(getString(R.string.update_your_profile));
                         } else {
@@ -206,7 +207,6 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
                         } else {
                             emailNav.setText(modelUser.getEmail());
                         }
-
                     }
                 }
             });
@@ -247,23 +247,20 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    private void userOnline(FirebaseAuth firebaseAuth, FirebaseFirestore firebaseFirestore) {
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser !=null){
-            userId = firebaseUser.getUid();
+    private void userOnline(FirebaseUser user, FirebaseFirestore firestore) {
+        if (user !=null){
+            userId = user.getUid();
             Map<String, Object> map = new HashMap<>();
             map.put("userSignIn", true);
             map.put("userOnline", true);
-            userId = firebaseUser.getUid();
 
-            firebaseFirestore.collection(getString(R.string.app_name)).document(userId).update(map);
+            firestore.collection(getString(R.string.users)).document(userId).update(map);
         }
     }
 
-    private void userOffline(FirebaseAuth firebaseAuth, FirebaseFirestore firebaseFirestore) {
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser != null) {
-            userId = firebaseUser.getUid();
+    private void userOffline(FirebaseUser user, FirebaseFirestore firestore) {
+        if (user != null) {
+            userId = user.getUid();
             String saveCurrencyDate,saveCurrencyTime;
 
             Calendar calendar = Calendar.getInstance();
@@ -280,7 +277,7 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
             map.put("lastDate", saveCurrencyDate);
             map.put("lastTime",saveCurrencyTime);
 
-            firebaseFirestore.collection(getString(R.string.app_name)).document(userId).update(map);
+            firestore.collection(getString(R.string.users)).document(userId).update(map);
         }
     }
 
@@ -316,7 +313,7 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
 
     @Override
     protected void onResume() {
-        userOnline(firebaseAuth, firebaseFirestore);
+        userOnline(user, firestore);
         fab.show();
         super.onResume();
     }
@@ -330,8 +327,14 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
             Toast.makeText(this, getText(R.string.on_back), Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
         } else {
-            userOffline(firebaseAuth,firebaseFirestore);
+            userOffline(user,firestore);
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+
     }
 }
