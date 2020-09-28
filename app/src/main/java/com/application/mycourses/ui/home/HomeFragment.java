@@ -84,8 +84,7 @@ public class HomeFragment extends Fragment implements HomeFragmentCallback {
                                 modelHomes.add(modelHome);
                                 homeAdapter = new HomeAdapter(getContext(), modelHomes, HomeFragment.this);
                             }
-                        }else
-                            modelHomes.clear();
+                        }
                     }
                     rvHome.setAdapter(homeAdapter);
                     rvHome.setLayoutManager(new LinearLayoutManager(getContext()));

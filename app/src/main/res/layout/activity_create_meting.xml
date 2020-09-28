@@ -95,26 +95,41 @@
                 tools:ignore="UselessParent">
 
                 <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/info"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:autofillHints="@string/info"
+                    android:drawableEnd="@drawable/ic_baseline_assignment"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/info"
+                    android:inputType="text"
+                    android:textSize="14sp" />
+
+                <TextView
                     android:id="@+id/tvAttachDoc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:text="@string/upload_document_file" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tiAttachDoc"
+                <EditText
+                    android:id="@+id/edtAttachDoc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:errorEnabled="true">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edtAttachDoc"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_attach_file"
-                        android:inputType="text"
-                        android:textSize="14sp" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:focusableInTouchMode="true"
+                    android:autofillHints="@string/pdf"
+                    android:hint="@string/pdf"
+                    android:drawableEnd="@drawable/ic_baseline_book"
+                    android:inputType="text"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tvAttachAudio"
@@ -123,20 +138,16 @@
                     android:textSize="14sp"
                     android:text="@string/upload_audio_file" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tiAttachAudio"
+                <EditText
+                    android:id="@+id/edtAttachAudio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:errorEnabled="true">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edtAttachAudio"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_attach_file"
-                        android:inputType="text"
-                        android:textSize="14sp" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    android:focusableInTouchMode="true"
+                    android:autofillHints="@string/audio"
+                    android:hint="@string/audio"
+                    android:drawableEnd="@drawable/ic_baseline_audio"
+                    android:inputType="text"
+                    android:textSize="14sp" />
 
                 <Button
                     android:id="@+id/btnSave"

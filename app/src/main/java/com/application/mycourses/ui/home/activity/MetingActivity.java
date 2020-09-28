@@ -1,8 +1,12 @@
 package com.application.mycourses.ui.home.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -14,10 +18,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.application.mycourses.MainNavActivity;
 import com.application.mycourses.R;
+import com.application.mycourses.model.ModelMeting;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.ads.AdRequest;
@@ -26,15 +32,28 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MetingActivity extends AppCompatActivity {
 
+    private List<ModelMeting> modelMetings = new ArrayList<>();
+    private MetingAdapter metingAdapter;
     private FirebaseUser user;
     private FirebaseAuth auth;
+    private FirebaseDatabase database;
+    private SwipeRefreshLayout refreshLayout;
+    private RecyclerView rvMeting;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +68,10 @@ public class MetingActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
+        database = FirebaseDatabase.getInstance();
+        refreshLayout = findViewById(R.id.swipeRefresh);
+        rvMeting = findViewById(R.id.rvMeting);
+        progressBar = findViewById(R.id.progressBar);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -86,10 +109,39 @@ public class MetingActivity extends AppCompatActivity {
             intentMeting.putExtra("classId",classId);
             startActivity(intentMeting);
             overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+            finish();
         });
 
         if (idUser.equals(userId)){
             fab.setVisibility(View.VISIBLE);
+        }
+
+        if (classId != null) {
+            progressBar.setVisibility(View.VISIBLE);
+            database.getReference(getString(R.string.name_class)).child(classId).child(getString(R.string.meting)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        modelMetings.clear();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                            ModelMeting modelMeting = dataSnapshot.getValue(ModelMeting.class);
+                            if (modelMeting !=null){
+                                modelMetings.add(modelMeting);
+                                metingAdapter = new MetingAdapter(MetingActivity.this, modelMetings);
+                            }
+                            rvMeting.setAdapter(metingAdapter);
+                            rvMeting.setLayoutManager(new LinearLayoutManager(MetingActivity.this));
+                            rvMeting.setHasFixedSize(true);
+                        }
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
     }
 

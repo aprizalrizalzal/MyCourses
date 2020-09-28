@@ -15,7 +15,7 @@
         tools:ignore="UselessParent">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/img_view_home"
+            android:id="@+id/img_view_meting"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
@@ -33,7 +33,7 @@
             android:layout_gravity="center">
 
             <TextView
-                android:id="@+id/tv_item_titleCourses"
+                android:id="@+id/tv_item_titleMeting"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
@@ -42,13 +42,13 @@
                 android:maxLines="1"
                 android:textSize="16sp"
                 android:textColor="@drawable/cr_txt_click_foreground_activated"
-                app:layout_constraintEnd_toEndOf="@+id/tv_item_informationCourses"
+                app:layout_constraintEnd_toEndOf="@+id/tv_item_informationMeting"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="@string/title" />
 
             <TextView
-                android:id="@+id/tv_item_informationCourses"
+                android:id="@+id/tv_item_informationMeting"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -58,25 +58,25 @@
                 android:textSize="14sp"
                 android:textStyle="italic"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_shareCourses"
+                app:layout_constraintEnd_toStartOf="@+id/btn_shareMeting"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_item_titleCourses"
+                app:layout_constraintTop_toBottomOf="@+id/tv_item_titleMeting"
                 tools:text="@string/info" />
 
             <ImageButton
-                android:id="@+id/btn_downloadDocCourses"
+                android:id="@+id/btn_downloadDocMeting"
                 style="?android:attr/checkboxStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/activity_vertical_margin"
                 android:contentDescription="@string/download_doc"
                 android:src="@drawable/ic_baseline_download"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_item_titleCourses"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_item_titleMeting"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_item_titleCourses" />
+                app:layout_constraintTop_toTopOf="@+id/tv_item_titleMeting" />
 
             <ImageButton
-                android:id="@+id/btn_deleteCourses"
+                android:id="@+id/btn_deleteMeting"
                 style="?android:attr/checkboxStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -84,23 +84,23 @@
                 android:contentDescription="@string/delete_doc"
                 android:src="@drawable/ic_baseline_delete"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_item_titleCourses"
-                app:layout_constraintEnd_toEndOf="@+id/btn_downloadDocCourses"
-                app:layout_constraintStart_toEndOf="@+id/tv_item_titleCourses"
-                app:layout_constraintTop_toTopOf="@+id/tv_item_titleCourses" />
+                app:layout_constraintBottom_toBottomOf="@+id/tv_item_titleMeting"
+                app:layout_constraintEnd_toEndOf="@+id/btn_downloadDocMeting"
+                app:layout_constraintStart_toEndOf="@+id/tv_item_titleMeting"
+                app:layout_constraintTop_toTopOf="@+id/tv_item_titleMeting" />
 
             <ImageButton
-                android:id="@+id/btn_shareCourses"
+                android:id="@+id/btn_shareMeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/share_text"
                 android:layout_marginEnd="@dimen/activity_vertical_margin"
                 style="?android:attr/checkboxStyle"
                 android:src="@drawable/ic_baseline_share"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_item_informationCourses"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_item_informationMeting"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/btn_downloadDocCourses"
-                app:layout_constraintTop_toTopOf="@+id/tv_item_informationCourses" />
+                app:layout_constraintStart_toStartOf="@+id/btn_downloadDocMeting"
+                app:layout_constraintTop_toTopOf="@+id/tv_item_informationMeting" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </RelativeLayout>

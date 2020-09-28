@@ -135,7 +135,7 @@
     <string name="share_text">%s is a Class Id to enter the %s class</string>
     <string name="replace_it">Data on %s subjects already exist. Do you want to replace it?</string>
     <string name="create_new">You will create an %s class?</string>
-    <string name="info">Information!</string>
+    <string name="info">Information</string>
     <string name="id_class_found">Class ID found, please press join to continue</string>
     <string name="id_class_not_found">Class ID not found, try again and check the id you entered?</string>
     <string name="retry">Retry</string>
@@ -165,4 +165,8 @@
     <string name="upload_audio_file">Upload Audio File</string>
     <string name="download_doc">Download Document</string>
     <string name="delete_doc">Delete Document</string>
+    <string name="pdf">Pdf</string>
+    <string name="audio">Audio</string>
+    <string name="select_meting">You have to choose the appropriate meeting</string>
+    <string name="update_meting_failed">Meeting %s Already Exists, you must choose another meeting</string>
 </resources>
