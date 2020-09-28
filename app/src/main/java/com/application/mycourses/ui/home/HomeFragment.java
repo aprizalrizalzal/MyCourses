@@ -71,46 +71,21 @@ public class HomeFragment extends Fragment implements HomeFragmentCallback {
 
     private void readHome(FirebaseUser user, FirebaseDatabase database) {
         progressBar.setVisibility(View.VISIBLE);
+        String userId = user.getUid();
         database.getReference(getString(R.string.name_class)).orderByChild("courses").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     modelHomes.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                        if (dataSnapshot.child(getString(R.string.name_class_member)).child(user.getUid()).exists()){
+                        if (dataSnapshot.child(getString(R.string.name_class_member)).child(userId).exists()){
                             ModelHome modelHome = dataSnapshot.getValue(ModelHome.class);
                             if (modelHome != null) {
                                 modelHomes.add(modelHome);
                                 homeAdapter = new HomeAdapter(getContext(), modelHomes, HomeFragment.this);
                             }
-                        }
-                    }
-                    rvHome.setAdapter(homeAdapter);
-                    rvHome.setLayoutManager(new LinearLayoutManager(getContext()));
-                    rvHome.setHasFixedSize(true);
-                }
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-    }
-
-    private void readJoin(FirebaseUser user, FirebaseDatabase database) {
-        progressBar.setVisibility(View.VISIBLE);
-        database.getReference(getString(R.string.name_class)).orderByChild("courses").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    modelHomes.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                        ModelHome modelHome = dataSnapshot.getValue(ModelHome.class);
-                        if (modelHome != null) {
-                            modelHomes.add(modelHome);
-                            homeAdapter = new HomeAdapter(getContext(), modelHomes, HomeFragment.this);
-                        }
+                        }else
+                            modelHomes.clear();
                     }
                     rvHome.setAdapter(homeAdapter);
                     rvHome.setLayoutManager(new LinearLayoutManager(getContext()));

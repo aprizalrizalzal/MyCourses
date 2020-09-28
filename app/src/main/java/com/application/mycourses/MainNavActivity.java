@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 import com.application.mycourses.model.ModelUser;
 import com.application.mycourses.ui.home.HomeFragment;
-import com.application.mycourses.ui.main.courses.CreateActivity;
-import com.application.mycourses.ui.main.courses.JoinActivity;
+import com.application.mycourses.ui.main.courses.CreateCoursesActivity;
+import com.application.mycourses.ui.main.courses.JoinCoursesActivity;
 import com.application.mycourses.ui.main.edit.ProfileActivity;
 import com.application.mycourses.ui.settings.SettingsActivity;
 import com.application.mycourses.ui.utils.FabRotate;
@@ -129,7 +129,7 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
 
         imgBtnCreate.setOnClickListener(view -> {
             if (haveConnection()){
-                startActivity(new Intent(this, CreateActivity.class));
+                startActivity(new Intent(this, CreateCoursesActivity.class));
                 overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
                 isFabRotate = FabRotate.rotateFab(view, !isFabRotate);
                 fab.hide();
@@ -142,7 +142,7 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
 
         imgBtnJoin.setOnClickListener(view -> {
             if (haveConnection()){
-                startActivity(new Intent(this, JoinActivity.class));
+                startActivity(new Intent(this, JoinCoursesActivity.class));
                 overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
                 isFabRotate = FabRotate.rotateFab(view, !isFabRotate);
                 fab.hide();

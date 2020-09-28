@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.courses.CreateCoursesActivity">
+
+    <include
+        layout="@layout/app_bar"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/linear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="4dp"
+                android:background="@drawable/bg_costume"
+                android:elevation="2dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/img_view"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_margin="@dimen/activity_vertical_margin"
+                    android:contentDescription="@string/app_name"
+                    android:elevation="2dp"
+                    android:src="@mipmap/ic_launcher_round">
+                </ImageView>
+
+                <TextView
+                    android:id="@+id/tvRun"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/app_name"
+                    android:layout_gravity="center"
+                    android:scrollHorizontally="true"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:textColor="?android:attr/colorForeground"
+                    android:focusable="true"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+                    android:focusableInTouchMode="true"
+                    tools:ignore="EllipsizeMaxLines"
+                    android:textAlignment="center"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/labeled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/linear"
+                android:background="@drawable/bg_costume"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:layout_marginVertical="4dp"
+                android:padding="@dimen/activity_horizontal_margin"
+                tools:ignore="UselessParent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:text="@string/university"
+                    android:textSize="14sp" />
+                <EditText
+                    android:id="@+id/edtUniversity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/university"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/university"
+                    android:inputType="text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:text="@string/faculty"
+                    android:textSize="14sp" />
+                <EditText
+                    android:id="@+id/edtFaculty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/faculty"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/faculty"
+                    android:inputType="text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:text="@string/study_program"
+                    android:textSize="14sp" />
+                <EditText
+                    android:id="@+id/edtStudy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/study_program"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/study_program"
+                    android:inputType="text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:text="@string/semester"
+                    android:textSize="14sp" />
+                <EditText
+                    android:id="@+id/edtSemester"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/semester"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/semester"
+                    android:inputType="number"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:text="@string/courses"
+                    android:textSize="14sp" />
+                <EditText
+                    android:id="@+id/edtCourses"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/courses"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/courses"
+                    android:inputType="text"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    android:background="@drawable/bg_click_btn"
+                    android:text="@string/save"
+                    android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

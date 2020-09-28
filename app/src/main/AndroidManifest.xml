@@ -18,16 +18,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.main.edit.CoursesActivity"
+            android:name=".ui.home.activity.CreateMetingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.home.activity.SemesterActivity"
+            android:name=".ui.home.activity.MetingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.main.courses.CreateActivity"
+            android:name=".ui.main.edit.EditCoursesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.main.courses.JoinActivity"
+            android:name=".ui.main.courses.CreateCoursesActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.main.courses.JoinCoursesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.main.edit.ProfileActivity"

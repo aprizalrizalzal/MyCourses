@@ -105,6 +105,7 @@
                             android:layout_height="wrap_content"
                             android:autofillHints="@string/name"
                             android:drawableEnd="@drawable/ic_baseline_person"
+                            android:focusableInTouchMode="true"
                             android:hint="@string/name"
                             android:inputType="text"
                             android:textSize="14sp" />
@@ -115,8 +116,9 @@
                             android:layout_height="wrap_content"
                             android:autofillHints="@string/name"
                             android:drawableEnd="@drawable/ic_baseline_supervised_user_circle"
+                            android:focusableInTouchMode="false"
                             android:hint="@string/gender"
-                            android:inputType="text"
+                            tools:ignore="TextFields"
                             android:textSize="14sp" />
 
 
@@ -141,8 +143,9 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="@string/name"
                         android:drawableEnd="@drawable/ic_baseline_event"
+                        android:focusableInTouchMode="false"
                         android:hint="@string/date_of_birth"
-                        android:inputType="date"
+                        tools:ignore="TextFields"
                         android:textSize="14sp" />
 
                     <EditText
@@ -151,6 +154,7 @@
                         android:layout_height="wrap_content"
                         android:drawableEnd="@drawable/ic_baseline_call"
                         android:inputType="phone"
+                        android:focusableInTouchMode="true"
                         android:hint="@string/number_phone"
                         android:textSize="14sp"
                         android:autofillHints="@string/number_phone" />
@@ -161,7 +165,7 @@
                         android:layout_height="wrap_content"
                         android:drawableEnd="@drawable/ic_baseline_email"
                         android:inputType="textEmailAddress"
-                        android:enabled="false"
+                        android:focusableInTouchMode="true"
                         android:hint="@string/email"
                         android:textSize="14sp"
                         android:autofillHints="@string/email" />

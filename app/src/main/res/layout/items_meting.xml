@@ -1,0 +1,106 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_click_btn"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/bg_click_btn"
+        android:elevation="2dp"
+        android:orientation="horizontal"
+        tools:ignore="UselessParent">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_view_home"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:elevation="2dp"
+            android:padding="@dimen/activity_vertical_margin"
+            app:civ_border_color="@android:color/white"
+            app:civ_border_overlay="true"
+            app:civ_border_width="1dp"
+            tools:src="@tools:sample/avatars" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="@dimen/activity_horizontal_padding"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/tv_item_titleCourses"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textSize="16sp"
+                android:textColor="@drawable/cr_txt_click_foreground_activated"
+                app:layout_constraintEnd_toEndOf="@+id/tv_item_informationCourses"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/title" />
+
+            <TextView
+                android:id="@+id/tv_item_informationCourses"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="2"
+                android:textColor="@drawable/cr_txt_click_foreground_activated"
+                android:textSize="14sp"
+                android:textStyle="italic"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_shareCourses"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_item_titleCourses"
+                tools:text="@string/info" />
+
+            <ImageButton
+                android:id="@+id/btn_downloadDocCourses"
+                style="?android:attr/checkboxStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/activity_vertical_margin"
+                android:contentDescription="@string/download_doc"
+                android:src="@drawable/ic_baseline_download"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_item_titleCourses"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_item_titleCourses" />
+
+            <ImageButton
+                android:id="@+id/btn_deleteCourses"
+                style="?android:attr/checkboxStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/delete_doc"
+                android:src="@drawable/ic_baseline_delete"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_item_titleCourses"
+                app:layout_constraintEnd_toEndOf="@+id/btn_downloadDocCourses"
+                app:layout_constraintStart_toEndOf="@+id/tv_item_titleCourses"
+                app:layout_constraintTop_toTopOf="@+id/tv_item_titleCourses" />
+
+            <ImageButton
+                android:id="@+id/btn_shareCourses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/share_text"
+                android:layout_marginEnd="@dimen/activity_vertical_margin"
+                style="?android:attr/checkboxStyle"
+                android:src="@drawable/ic_baseline_share"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_item_informationCourses"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/btn_downloadDocCourses"
+                app:layout_constraintTop_toTopOf="@+id/tv_item_informationCourses" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</RelativeLayout>

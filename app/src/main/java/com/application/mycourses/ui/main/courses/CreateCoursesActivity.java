@@ -1,5 +1,6 @@
 package com.application.mycourses.ui.main.courses;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -25,11 +26,14 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,7 +44,7 @@ import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CreateActivity extends AppCompatActivity {
+public class CreateCoursesActivity extends AppCompatActivity {
 
     private EditText edtUni,edtFac,edtStud,edtSem,edtCour;
     private String userId,university,faculty,study,semester,courses;
@@ -49,11 +53,12 @@ public class CreateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create);
+        setContentView(R.layout.activity_courses_create);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
@@ -88,17 +93,17 @@ public class CreateActivity extends AppCompatActivity {
         btnSave.setOnClickListener(view -> {
             if (haveConnection()){
                 if (user != null) {
-                    createClass(user,database);
+                    createClass(user,firestore,database);
                 }
             } else {
                 Snackbar.make(btnSave, getString(R.string.not_have_connection), BaseTransientBottomBar.LENGTH_INDEFINITE )
-                        .setAction(getString(R.string.retry),viewRetry -> createClass(user,database))
+                        .setAction(getString(R.string.retry),viewRetry -> createClass(user, firestore, database))
                         .show();
             }
         });
     }
 
-    private void createClass(FirebaseUser user, FirebaseDatabase database) {
+    private void createClass(FirebaseUser user, FirebaseFirestore firestore, FirebaseDatabase database) {
         if (haveConnection()) {
             if (!validateUni() || !validateFac() || !validateStud() || !validateSem() || !validateCour()) {
                 return;
@@ -138,22 +143,22 @@ public class CreateActivity extends AppCompatActivity {
             database.getReference(getString(R.string.name_class)).child(idClass).setValue(map).addOnCompleteListener(this, task -> {
 
                 Map<String, Object> mapClass = new HashMap<>();
-                mapClass.put("status", "Owner");
+                mapClass.put("userId", userId);
                 database.getReference(getString(R.string.name_class)).child(idClass).child(getString(R.string.name_class_member)).child(userId).updateChildren(mapClass).addOnCompleteListener(this, taskClass -> {
 
-                Toast.makeText(CreateActivity.this, R.string.data_update, Toast.LENGTH_SHORT).show();
-                loadingProgress.dismissLoadingProgress();
-                startActivity(new Intent(CreateActivity.this, MainNavActivity.class));
-                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                finish();
+                    loadingProgress.dismissLoadingProgress();
+                    Toast.makeText(CreateCoursesActivity.this, R.string.data_update, Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(CreateCoursesActivity.this, MainNavActivity.class));
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    finish();
 
                 }).addOnFailureListener(this, e -> {
-                    Toast.makeText(CreateActivity.this, getText(R.string.update_failed), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateCoursesActivity.this, getText(R.string.update_failed), Toast.LENGTH_SHORT).show();
                     loadingProgress.dismissLoadingProgress();
                 });
 
             }).addOnFailureListener(this, e -> {
-                Toast.makeText(CreateActivity.this, getText(R.string.update_failed), Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateCoursesActivity.this, getText(R.string.update_failed), Toast.LENGTH_SHORT).show();
                 loadingProgress.dismissLoadingProgress();
             });
 
@@ -172,7 +177,7 @@ public class CreateActivity extends AppCompatActivity {
         itemSetting.setVisible(false);
         MenuItem itemHelp = menu.findItem(R.id.action_help);
         itemHelp.setOnMenuItemClickListener(menuItem -> {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CreateActivity.this);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CreateCoursesActivity.this);
             alertDialogBuilder
                     .setTitle(R.string.action_help)
                     .setMessage(R.string.help_or_questions)

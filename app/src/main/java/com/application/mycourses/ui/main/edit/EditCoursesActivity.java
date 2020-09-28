@@ -57,7 +57,7 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CoursesActivity extends AppCompatActivity {
+public class EditCoursesActivity extends AppCompatActivity {
 
     private FirebaseUser firebaseUser;
     private FirebaseDatabase database;
@@ -75,7 +75,7 @@ public class CoursesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
+        setContentView(R.layout.activity_courses_edit);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -134,10 +134,10 @@ public class CoursesActivity extends AppCompatActivity {
         }
 
         btnAddCover.setOnClickListener(view -> {
-            if (ContextCompat.checkSelfPermission(CoursesActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            if (ContextCompat.checkSelfPermission(EditCoursesActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
                 selectImage();
             }else {
-                ActivityCompat.requestPermissions(CoursesActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},IMAGE_REQUEST);
+                ActivityCompat.requestPermissions(EditCoursesActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},IMAGE_REQUEST);
             }
         });
 
@@ -236,7 +236,7 @@ public class CoursesActivity extends AppCompatActivity {
                 }
             });
         }).addOnFailureListener(this, e -> {
-            Toast.makeText(CoursesActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditCoursesActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
             loadingProgress.dismissLoadingProgress();
         });
     }
@@ -254,10 +254,10 @@ public class CoursesActivity extends AppCompatActivity {
 
         database.getReference(getString(R.string.name_class)).child(userIdMember).child(idClass).updateChildren(map).addOnCompleteListener(this, task -> {
             loadingProgress.dismissLoadingProgress();
-            Toast.makeText(CoursesActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditCoursesActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(this, e -> {
             loadingProgress.dismissLoadingProgress();
-            Toast.makeText(CoursesActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditCoursesActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -280,7 +280,7 @@ public class CoursesActivity extends AppCompatActivity {
         if (requestCode == IMAGE_REQUEST && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             selectImage();
         } else {
-            Toast.makeText(CoursesActivity.this, R.string.allow_permission_storage, Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditCoursesActivity.this, R.string.allow_permission_storage, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -307,26 +307,26 @@ public class CoursesActivity extends AppCompatActivity {
 
                 database.getReference(getString(R.string.name_class)).child(userId).child(idClass).updateChildren(map).addOnCompleteListener(this, taskUpdate -> {
                     loadingProgress.dismissLoadingProgress();
-                    Toast.makeText(CoursesActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditCoursesActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
 
-                    startActivity(new Intent(CoursesActivity.this, MainNavActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    startActivity(new Intent(EditCoursesActivity.this, MainNavActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                     finish();
 
                 }).addOnFailureListener(this, e -> {
                     loadingProgress.dismissLoadingProgress();
-                    Toast.makeText(CoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditCoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
                 });
 
             }).addOnFailureListener(this, e -> {
                 loadingProgress.dismissLoadingProgress();
-                Toast.makeText(CoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditCoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
             });
 
         } else {
             loadingProgress.dismissLoadingProgress();
             Snackbar.make(imgCover, getString(R.string.no_image_upload), BaseTransientBottomBar.LENGTH_SHORT).setAction(getString(R.string.yes), null).show();
-            startActivity(new Intent(CoursesActivity.this, MainNavActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            startActivity(new Intent(EditCoursesActivity.this, MainNavActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
             finish();
         }
@@ -356,7 +356,7 @@ public class CoursesActivity extends AppCompatActivity {
         itemSetting.setVisible(false);
         MenuItem itemHelp = menu.findItem(R.id.action_help);
         itemHelp.setOnMenuItemClickListener(menuItem -> {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CoursesActivity.this);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(EditCoursesActivity.this);
             alertDialogBuilder
                     .setTitle(R.string.action_help)
                     .setMessage(R.string.help_or_questions)
@@ -442,7 +442,7 @@ public class CoursesActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(CoursesActivity.this, MainNavActivity.class));
+        startActivity(new Intent(EditCoursesActivity.this, MainNavActivity.class));
         overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
         finish();
 

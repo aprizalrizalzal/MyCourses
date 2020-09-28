@@ -25,6 +25,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,13 +35,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Member;
 import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class JoinActivity extends AppCompatActivity {
+public class JoinCoursesActivity extends AppCompatActivity {
 
     private Button btnJoin;
     private CircleImageView imgView;
@@ -52,7 +56,7 @@ public class JoinActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_join);
+        setContentView(R.layout.activity_courses_join);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -63,6 +67,7 @@ public class JoinActivity extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
@@ -95,18 +100,18 @@ public class JoinActivity extends AppCompatActivity {
         btnSearch.setOnClickListener(view -> {
             if (haveConnection()){
                 if (user != null) {
-                    searchClass(user,database);
+                    searchClass(user,firestore,database);
                 }
             } else {
                 Snackbar.make(btnSearch, getString(R.string.not_have_connection), BaseTransientBottomBar.LENGTH_INDEFINITE )
-                        .setAction(getString(R.string.retry),viewRetry -> searchClass(user,database))
+                        .setAction(getString(R.string.retry),viewRetry -> searchClass(user, firestore, database))
                         .show();
             }
         });
 
     }
 
-    private void searchClass(FirebaseUser user,FirebaseDatabase database) {
+    private void searchClass(FirebaseUser user, FirebaseFirestore firestore, FirebaseDatabase database) {
         if (!validateClassId()){
             return;
         }
@@ -116,13 +121,20 @@ public class JoinActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
                     ModelHome modelHome = snapshot.getValue(ModelHome.class);
+                    String idUser = user.getUid();
                     if (modelHome !=null && modelHome.getClassId().equals(idClass)){
-                        Toast.makeText(JoinActivity.this, getString(R.string.id_class_found), Toast.LENGTH_SHORT).show();
-                        String idClass = modelHome.getClassId();
-                        idClassFound(user,database,idClass);
+                        if (snapshot.child(getString(R.string.name_class_member)).child(idUser).exists()) {
+                            Toast.makeText(JoinCoursesActivity.this, getString(R.string.your_id_class), Toast.LENGTH_SHORT).show();
+                            btnJoin.setEnabled(false);
+                        } else {
+                            Toast.makeText(JoinCoursesActivity.this, getString(R.string.id_class_found), Toast.LENGTH_SHORT).show();
+                            String idClass = modelHome.getClassId();
+                            btnJoin.setEnabled(true);
+                            idClassFound(user,firestore,database,idClass);
+                        }
                     }
                 } else {
-                    Toast.makeText(JoinActivity.this, getString(R.string.id_class_not_found), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JoinCoursesActivity.this, getString(R.string.id_class_not_found), Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
@@ -132,7 +144,7 @@ public class JoinActivity extends AppCompatActivity {
         });
     }
 
-    private void idClassFound(FirebaseUser user, FirebaseDatabase database, String idClass) {
+    private void idClassFound(FirebaseUser user, FirebaseFirestore firestore, FirebaseDatabase database, String idClass) {
         database.getReference(getString(R.string.name_class)).child(idClass).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -159,10 +171,10 @@ public class JoinActivity extends AppCompatActivity {
 
                     btnJoin.setOnClickListener(view -> {
                         if (haveConnection()){
-                            joinClass(user,idClass,database,modelHome);
+                            joinClass(user,idClass, firestore, database);
                         } else {
                             Snackbar.make(btnJoin, getString(R.string.not_have_connection), BaseTransientBottomBar.LENGTH_INDEFINITE )
-                                    .setAction(getString(R.string.retry),viewRetry -> searchClass(user,database))
+                                    .setAction(getString(R.string.retry),viewRetry -> searchClass(user, firestore, database))
                                     .show();
                         }
                     });
@@ -177,22 +189,22 @@ public class JoinActivity extends AppCompatActivity {
 
     }
 
-    private void joinClass(FirebaseUser user, String idClass, FirebaseDatabase database, ModelHome modelHome) {
+    private void joinClass(FirebaseUser user, String idClass, FirebaseFirestore firestore, FirebaseDatabase database) {
 
         loadingProgress.startLoadingProgress();
         String userId = user.getUid();
         Map<String, Object> mapClass = new HashMap<>();
-        mapClass.put("status", "Member");
+        mapClass.put("userId", userId);
         database.getReference(getString(R.string.name_class)).child(idClass).child(getString(R.string.name_class_member)).child(userId).updateChildren(mapClass).addOnCompleteListener(this, taskClass -> {
 
             loadingProgress.dismissLoadingProgress();
-            Toast.makeText(JoinActivity.this, R.string.join_class,Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(JoinActivity.this, MainNavActivity.class));
+            Toast.makeText(JoinCoursesActivity.this, R.string.join_class,Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(JoinCoursesActivity.this, MainNavActivity.class));
             overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
             finish();
 
         }).addOnFailureListener(this, e -> {
-            Toast.makeText(JoinActivity.this,getText(R.string.join_failed),Toast.LENGTH_SHORT).show();
+            Toast.makeText(JoinCoursesActivity.this,getText(R.string.join_failed),Toast.LENGTH_SHORT).show();
             loadingProgress.dismissLoadingProgress();
         });
 

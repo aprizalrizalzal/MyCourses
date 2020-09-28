@@ -156,4 +156,13 @@
     <string name="join_id_class">Please enter the intended class id code and if appropriate, please join</string>
     <string name="online">Online</string>
     <string name="users">Users</string>
+    <string name="delete_and_left_class">You have successfully logged out / deleted the class that you are following</string>
+    <string name="meting">Meting</string>
+    <string name="title">Title</string>
+    <string name="contents">Contents</string>
+    <string name="your_id_class">The id class you enter, is your class. Please enter another class id?</string>
+    <string name="upload_document_file">Upload Document File</string>
+    <string name="upload_audio_file">Upload Audio File</string>
+    <string name="download_doc">Download Document</string>
+    <string name="delete_doc">Delete Document</string>
 </resources>

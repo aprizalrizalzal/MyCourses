@@ -19,8 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.application.mycourses.MainNavActivity;
 import com.application.mycourses.R;
 import com.application.mycourses.model.ModelHome;
-import com.application.mycourses.ui.home.activity.SemesterActivity;
-import com.application.mycourses.ui.main.edit.CoursesActivity;
+import com.application.mycourses.ui.home.activity.MetingActivity;
+import com.application.mycourses.ui.main.edit.EditCoursesActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -164,13 +164,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             titleSemester.setText(String.format("Semester %s",modelHome.getSemester()));
 
             itemView.setOnClickListener(item -> {
-                Intent intent = new Intent(contextHome, SemesterActivity.class);
+                Intent intent = new Intent(contextHome, MetingActivity.class);
+                intent.putExtra("userId",modelHome.getUserId());
                 intent.putExtra("urlCover",modelHome.getUrlCover());
-                intent.putExtra("university",modelHome.getUniversity());
-                intent.putExtra("faculty",modelHome.getFaculty());
-                intent.putExtra("study",modelHome.getStudy());
-                intent.putExtra("semester",modelHome.getSemester());
                 intent.putExtra("courses",modelHome.getCourses());
+                intent.putExtra("classId",modelHome.getClassId());
                 contextHome.startActivity(intent);
                 Activity activity = (Activity) contextHome;
                 activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
@@ -183,8 +181,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         }
 
         private void editIdClass(ModelHome modelHome, FirebaseUser firebaseUser) {
-            if (firebaseUser!=null){
-                Intent intent = new Intent(contextHome, CoursesActivity.class);
+            String userId = firebaseUser.getUid();
+            if (userId.equals(modelHome.getUserId())){
+                Intent intent = new Intent(contextHome, EditCoursesActivity.class);
                 intent.putExtra("classId",modelHome.getClassId());
                 intent.putExtra("courses",modelHome.getCourses());
                 intent.putExtra("faculty",modelHome.getFaculty());
@@ -200,22 +199,33 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         }
         private void deleteIdClass(ModelHome modelHome, FirebaseDatabase database, FirebaseUser firebaseUser) {
             String userId = firebaseUser.getUid();
-            database.getReference(contextHome.getString(R.string.name_class)).child(userId).child(modelHome.getClassId()).removeValue().addOnCompleteListener(task -> {
-              if (task.isSuccessful()){
-                  database.getReference(contextHome.getString(R.string.name_class_list)).child(modelHome.getClassId()).removeValue().addOnCompleteListener(taskClass -> {
-                     if (taskClass.isSuccessful()){
-                         Intent intent = new Intent(contextHome, MainNavActivity.class);
-                         Toast.makeText(contextHome,contextHome.getString(R.string.delete_class),Toast.LENGTH_SHORT).show();
-                         contextHome.startActivity(intent);
-                         Activity activity = (Activity) contextHome;
-                         activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
-                         activity.finish();
-                     } else {
-                         Toast.makeText(contextHome,contextHome.getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
-                     }});
-              } else {
-                  Toast.makeText(contextHome,contextHome.getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
-              }});
+            if (userId.equals(modelHome.getUserId())){
+                database.getReference(contextHome.getString(R.string.name_class)).child(modelHome.getClassId()).removeValue().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        Intent intent = new Intent(contextHome, MainNavActivity.class);
+                        Toast.makeText(contextHome,contextHome.getString(R.string.delete_class),Toast.LENGTH_SHORT).show();
+                        contextHome.startActivity(intent);
+                        Activity activity = (Activity) contextHome;
+                        activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                        activity.finish();
+                    } else {
+                        Toast.makeText(contextHome,contextHome.getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                database.getReference(contextHome.getString(R.string.name_class)).child(modelHome.getClassId()).child(contextHome.getString(R.string.name_class_member)).child(userId).removeValue().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        Intent intent = new Intent(contextHome, MainNavActivity.class);
+                        Toast.makeText(contextHome,contextHome.getString(R.string.delete_and_left_class),Toast.LENGTH_SHORT).show();
+                        contextHome.startActivity(intent);
+                        Activity activity = (Activity) contextHome;
+                        activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                        activity.finish();
+                    } else {
+                        Toast.makeText(contextHome,contextHome.getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         }
     }
 }
