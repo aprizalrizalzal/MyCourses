@@ -290,25 +290,26 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 return fileReference.getDownloadUrl();
             }).addOnCompleteListener(this, task -> {
+                if (task.isSuccessful()){
+                    loadingProgress.dismissLoadingProgress();
+                    Uri downloadUri = task.getResult();
+                    assert downloadUri != null;
+                    String myUri = downloadUri.toString();
 
-                loadingProgress.dismissLoadingProgress();
-                Uri downloadUri = task.getResult();
-                assert downloadUri != null;
-                String myUri = downloadUri.toString();
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("urlPicture", myUri);
 
-                Map<String, Object> map = new HashMap<>();
-                map.put("urlPicture", myUri);
+                    firestore.collection(getString(R.string.users)).document(userId).update(map);
+                    Toast.makeText(ProfileActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
 
-                firestore.collection(getString(R.string.users)).document(userId).update(map);
-                Toast.makeText(ProfileActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
+                    btnAddCover.setVisibility(View.VISIBLE);
+                    btnSaveCover.setVisibility(View.GONE);
 
-                btnAddCover.setVisibility(View.VISIBLE);
-                btnSaveCover.setVisibility(View.GONE);
-
-            }).addOnFailureListener(e -> {
-                loadingProgress.dismissLoadingProgress();
-                Toast.makeText(getApplicationContext(), R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
-                btnAddCover.setVisibility(View.GONE);
+                }else {
+                    loadingProgress.dismissLoadingProgress();
+                    Toast.makeText(getApplicationContext(), R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
+                    btnAddCover.setVisibility(View.GONE);
+                }
             });
 
         } else {
@@ -352,10 +353,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         userId=user.getUid();
         firestore.collection(getString(R.string.users)).document(userId).update(map).addOnCompleteListener(this, task -> {
-            Toast.makeText(ProfileActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
-            loadingProgress.dismissLoadingProgress();
-        }).addOnFailureListener(this, e -> {
-            Toast.makeText(ProfileActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
+            if (task.isSuccessful()){
+                Toast.makeText(ProfileActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(ProfileActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
+            }
             loadingProgress.dismissLoadingProgress();
         });
 

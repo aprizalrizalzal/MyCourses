@@ -141,25 +141,25 @@ public class CreateCoursesActivity extends AppCompatActivity {
             map.put("urlCover", "urlCover");
             map.put("userId", userId);
             database.getReference(getString(R.string.name_class)).child(idClass).setValue(map).addOnCompleteListener(this, task -> {
-
-                Map<String, Object> mapClass = new HashMap<>();
-                mapClass.put("userId", userId);
-                database.getReference(getString(R.string.name_class)).child(idClass).child(getString(R.string.name_class_member)).child(userId).updateChildren(mapClass).addOnCompleteListener(this, taskClass -> {
-
-                    loadingProgress.dismissLoadingProgress();
-                    Toast.makeText(CreateCoursesActivity.this, R.string.data_update, Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(CreateCoursesActivity.this, MainNavActivity.class));
-                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                    finish();
-
-                }).addOnFailureListener(this, e -> {
+                if (task.isSuccessful()){
+                    Map<String, Object> mapClass = new HashMap<>();
+                    mapClass.put("userId", userId);
+                    database.getReference(getString(R.string.name_class)).child(idClass).child(getString(R.string.name_class_member)).child(userId).updateChildren(mapClass).addOnCompleteListener(this, taskClass -> {
+                        if (taskClass.isSuccessful()){
+                            loadingProgress.dismissLoadingProgress();
+                            Toast.makeText(CreateCoursesActivity.this, R.string.data_update, Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(CreateCoursesActivity.this, MainNavActivity.class));
+                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                            finish();
+                        }else {
+                            Toast.makeText(CreateCoursesActivity.this, getText(R.string.update_failed), Toast.LENGTH_SHORT).show();
+                            loadingProgress.dismissLoadingProgress();
+                        }
+                    });
+                }else {
                     Toast.makeText(CreateCoursesActivity.this, getText(R.string.update_failed), Toast.LENGTH_SHORT).show();
                     loadingProgress.dismissLoadingProgress();
-                });
-
-            }).addOnFailureListener(this, e -> {
-                Toast.makeText(CreateCoursesActivity.this, getText(R.string.update_failed), Toast.LENGTH_SHORT).show();
-                loadingProgress.dismissLoadingProgress();
+                }
             });
 
         }else {

@@ -108,43 +108,46 @@ public class ReAuthenticateActivity extends AppCompatActivity {
         AuthCredential credential = EmailAuthProvider.getCredential(email, password);
 
         firebaseUser.reauthenticate(credential).addOnCompleteListener(taskVer -> {
-            loadingProgress.dismissLoadingProgress();
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ReAuthenticateActivity.this);
-            alertDialogBuilder
-                    .setTitle(R.string.delete_account)
-                    .setMessage(getString(R.string.verify_account))
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.yes, (dialog, id) -> {
-                        loadingProgress.dismissLoadingProgress();
-                        deleteAuthUser(firebaseUser);
-                            })
-                    .setNegativeButton(R.string.no, (dialog, id) -> {
-                        loadingProgress.dismissLoadingProgress();
-                        edtEmail.setText(null);
-                        edtPassword.setText(null);
-                        dialog.cancel();
-                    });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(getDrawable(R.drawable.bg_costume));
-            alertDialog.show();
-        }).addOnFailureListener(e -> {
-            Toast.makeText(ReAuthenticateActivity.this, getString(R.string.auth_failed), Toast.LENGTH_SHORT).show();
-            loadingProgress.dismissLoadingProgress();
+            if (taskVer.isSuccessful()){
+                loadingProgress.dismissLoadingProgress();
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ReAuthenticateActivity.this);
+                alertDialogBuilder
+                        .setTitle(R.string.delete_account)
+                        .setMessage(getString(R.string.verify_account))
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.yes, (dialog, id) -> {
+                            loadingProgress.dismissLoadingProgress();
+                            deleteAuthUser(firebaseUser);
+                        })
+                        .setNegativeButton(R.string.no, (dialog, id) -> {
+                            loadingProgress.dismissLoadingProgress();
+                            edtEmail.setText(null);
+                            edtPassword.setText(null);
+                            dialog.cancel();
+                        });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(getDrawable(R.drawable.bg_costume));
+                alertDialog.show();
+            }else {
+                Toast.makeText(ReAuthenticateActivity.this, getString(R.string.auth_failed), Toast.LENGTH_SHORT).show();
+                loadingProgress.dismissLoadingProgress();
+            }
         });
     }
 
     private void deleteAuthUser(FirebaseUser firebaseUser) {
         loadingProgress.startLoadingProgress();
-        firebaseUser.delete().addOnSuccessListener(aVoidAuth -> {
-            Toast.makeText(ReAuthenticateActivity.this, getText(R.string.delete_auth_account),Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(ReAuthenticateActivity.this, SignInActivity.class));
-            overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
-            loadingProgress.dismissLoadingProgress();
-            finish();
-
-        }).addOnFailureListener(e -> {
-            loadingProgress.dismissLoadingProgress();
-            Toast.makeText(ReAuthenticateActivity.this, getText(R.string.delete_auth_account_failed),Toast.LENGTH_SHORT).show();
+        firebaseUser.delete().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                Toast.makeText(ReAuthenticateActivity.this, getText(R.string.delete_auth_account),Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(ReAuthenticateActivity.this, SignInActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                loadingProgress.dismissLoadingProgress();
+                finish();
+            }else {
+                loadingProgress.dismissLoadingProgress();
+                Toast.makeText(ReAuthenticateActivity.this, getText(R.string.delete_auth_account_failed),Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

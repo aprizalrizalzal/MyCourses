@@ -84,11 +84,13 @@ public class HomeFragment extends Fragment implements HomeFragmentCallback {
                                 modelHomes.add(modelHome);
                                 homeAdapter = new HomeAdapter(getContext(), modelHomes, HomeFragment.this);
                             }
+                            rvHome.setAdapter(homeAdapter);
+                            rvHome.setLayoutManager(new LinearLayoutManager(getContext()));
+                            rvHome.setHasFixedSize(true);
+                        }else {
+                            readHome(user,database);
                         }
                     }
-                    rvHome.setAdapter(homeAdapter);
-                    rvHome.setLayoutManager(new LinearLayoutManager(getContext()));
-                    rvHome.setHasFixedSize(true);
                 }
                 progressBar.setVisibility(View.GONE);
             }

@@ -7,6 +7,7 @@
     <dimen name="nav_header_height">185dp</dimen>
     <dimen name="dialog_width">340dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_animate_iii">135dp</dimen>
     <dimen name="fab_animate_ii">50dp</dimen>
     <dimen name="fab_animate_i">70dp</dimen>
 </resources>

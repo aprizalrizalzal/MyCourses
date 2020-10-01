@@ -169,4 +169,16 @@
     <string name="audio">Audio</string>
     <string name="select_meting">You have to choose the appropriate meeting</string>
     <string name="update_meting_failed">Meeting %s Already Exists, you must choose another meeting</string>
+    <string name="action_download">Download</string>
+    <string name="create_picture">The image is created</string>
+    <string name="image_failed">Image Failed</string>
+    <string name="blank_image">Blank Image</string>
+    <string name="create_doc">The Document is created</string>
+    <string name="doc_failed">Document Failed</string>
+    <string name="blank_doc">Blank Document</string>
+    <string name="create_audio">The Audio is created</string>
+    <string name="audio_failed">Audio Failed</string>
+    <string name="blank_audio">Blank Audio</string>
+    <string name="valid_data">Is the Data You Enter Correct?</string>
+    <string name="not_have_file">Check Again if Your Data and Files Are Complete</string>
 </resources>

@@ -1,4 +1,4 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,13 +7,17 @@
     tools:context=".ui.home.activity.CreateMetingActivity">
 
     <include
-        layout="@layout/app_bar"/>
+        android:id="@+id/include2"
+        layout="@layout/app_bar"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        android:layout_height="0dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include2">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -38,16 +42,16 @@
                     android:src="@mipmap/ic_launcher_round"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
                     android:id="@+id/btnAddCover"
+                    style="@style/Widget.Design.FloatingActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="4dp"
-                    android:elevation="2dp"
-                    style="@style/Widget.Design.FloatingActionButton"
                     android:contentDescription="@string/name"
+                    android:elevation="2dp"
+                    android:padding="4dp"
                     android:src="@drawable/ic_baseline_add_a_photo"
                     app:layout_constraintBottom_toBottomOf="@+id/img_view"
                     app:layout_constraintEnd_toEndOf="@+id/img_view" />
@@ -87,10 +91,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/linear"
+                android:layout_marginVertical="4dp"
                 android:background="@drawable/bg_costume"
                 android:elevation="2dp"
                 android:orientation="vertical"
-                android:layout_marginVertical="4dp"
                 android:padding="@dimen/activity_horizontal_padding"
                 tools:ignore="UselessParent">
 
@@ -116,18 +120,18 @@
                     android:id="@+id/tvAttachDoc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:text="@string/upload_document_file" />
+                    android:text="@string/upload_document_file"
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/edtAttachDoc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:focusableInTouchMode="true"
                     android:autofillHints="@string/pdf"
-                    android:hint="@string/pdf"
                     android:drawableEnd="@drawable/ic_baseline_book"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/pdf"
                     android:inputType="text"
                     android:textSize="14sp" />
 
@@ -135,17 +139,17 @@
                     android:id="@+id/tvAttachAudio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:text="@string/upload_audio_file" />
+                    android:text="@string/upload_audio_file"
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/edtAttachAudio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:focusableInTouchMode="true"
                     android:autofillHints="@string/audio"
-                    android:hint="@string/audio"
                     android:drawableEnd="@drawable/ic_baseline_audio"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/audio"
                     android:inputType="text"
                     android:textSize="14sp" />
 
@@ -155,10 +159,11 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/activity_horizontal_margin"
                     android:background="@drawable/bg_click_btn"
+                    android:enabled="false"
                     android:text="@string/save"
                     android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
             </LinearLayout>
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

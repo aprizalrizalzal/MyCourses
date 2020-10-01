@@ -135,32 +135,36 @@ public class SignUpActivity extends AppCompatActivity {
         password = edtPassword.getText().toString();
         loadingProgress.startLoadingProgress();
         auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, task -> {
-            user = auth.getCurrentUser();
-            if (user != null) {
-                userId = user.getUid();
+            if (task.isSuccessful()){
+                user = auth.getCurrentUser();
+                if (user != null) {
+                    userId = user.getUid();
 
-                Map<String,Object> map = new HashMap<>();
-                map.put("userName","");
-                map.put("userId",userId);
-                map.put("userSignIn",false);
-                map.put("email",email);
-                map.put("emailVerify",false);
-                map.put("urlPicture","");
+                    Map<String,Object> map = new HashMap<>();
+                    map.put("userName","");
+                    map.put("userId",userId);
+                    map.put("userSignIn",false);
+                    map.put("email",email);
+                    map.put("emailVerify",false);
+                    map.put("urlPicture","");
 
-                firestore.collection(getString(R.string.users)).document(userId).set(map).addOnCompleteListener(this, taskUser -> {
-                    loadingProgress.dismissLoadingProgress();
-                    startActivity(new Intent(this,SignInActivity.class));
-                    Toast.makeText(this,getString(R.string.sign_up_successfully),Toast.LENGTH_SHORT).show();
-                    overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
-                    finish();
-                }).addOnFailureListener(this, e ->{
-                    loadingProgress.dismissLoadingProgress();
-                    Toast.makeText(this,getString(R.string.data_failed),Toast.LENGTH_SHORT).show();
-                });
+                    firestore.collection(getString(R.string.users)).document(userId).set(map).addOnCompleteListener(this, taskUser -> {
+                        if (taskUser.isSuccessful()){
+                            loadingProgress.dismissLoadingProgress();
+                            startActivity(new Intent(this,SignInActivity.class));
+                            Toast.makeText(this,getString(R.string.sign_up_successfully),Toast.LENGTH_SHORT).show();
+                            overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                            finish();
+                        } else {
+                            loadingProgress.dismissLoadingProgress();
+                            Toast.makeText(this,getString(R.string.data_failed),Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }else {
+                loadingProgress.dismissLoadingProgress();
+                Toast.makeText(this,getString(R.string.auth_failed),Toast.LENGTH_SHORT).show();
             }
-        }).addOnFailureListener(this, e -> {
-            loadingProgress.dismissLoadingProgress();
-            Toast.makeText(this,getString(R.string.auth_failed),Toast.LENGTH_SHORT).show();
         });
     }
 

@@ -2,6 +2,7 @@ package com.application.mycourses.model;
 
 public class ModelMeting {
 
+    private String idMeting;
     private String meting;
     private String information;
     private String document;
@@ -11,12 +12,17 @@ public class ModelMeting {
     public ModelMeting() {
     }
 
-    public ModelMeting(String meting, String information, String document, String audio, String urlCover) {
+    public ModelMeting(String idMeting, String meting, String information, String document, String audio, String urlCover) {
+        this.idMeting = idMeting;
         this.meting = meting;
         this.information = information;
         this.document = document;
         this.audio = audio;
         this.urlCover = urlCover;
+    }
+
+    public String getIdMeting() {
+        return idMeting;
     }
 
     public String getMeting() {

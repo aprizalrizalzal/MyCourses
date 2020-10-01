@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -36,7 +35,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +48,7 @@ public class MetingActivity extends AppCompatActivity {
     private MetingAdapter metingAdapter;
     private FirebaseUser user;
     private FirebaseAuth auth;
+    private FloatingActionButton fabCreate;
     private FirebaseDatabase database;
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView rvMeting;
@@ -98,10 +97,17 @@ public class MetingActivity extends AppCompatActivity {
         }
         TextView appBar = findViewById(R.id.tvAppBar);
         appBar.setText(courses);
+        metingClass(classId,database);
 
-        FloatingActionButton fab = findViewById(R.id.fabMeting);
+        refreshLayout = findViewById(R.id.swipeRefresh);
+        refreshLayout.setOnRefreshListener(() -> {
+            metingClass(classId,database);
+            refreshLayout.setRefreshing(false);
+        });
+        fabCreate = findViewById(R.id.fabCreate);
+
         String idUser = user.getUid();
-        fab.setOnClickListener(view -> {
+        fabCreate.setOnClickListener(view -> {
             Intent intentMeting = new Intent(MetingActivity.this, CreateMetingActivity.class);
             intentMeting.putExtra("userId",userId);
             intentMeting.putExtra("urlCover",urlCover);
@@ -113,9 +119,11 @@ public class MetingActivity extends AppCompatActivity {
         });
 
         if (idUser.equals(userId)){
-            fab.setVisibility(View.VISIBLE);
+            fabCreate.setVisibility(View.VISIBLE);
         }
+    }
 
+    private void metingClass(String classId, FirebaseDatabase database) {
         if (classId != null) {
             progressBar.setVisibility(View.VISIBLE);
             database.getReference(getString(R.string.name_class)).child(classId).child(getString(R.string.meting)).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -132,7 +140,9 @@ public class MetingActivity extends AppCompatActivity {
                             rvMeting.setAdapter(metingAdapter);
                             rvMeting.setLayoutManager(new LinearLayoutManager(MetingActivity.this));
                             rvMeting.setHasFixedSize(true);
+                            progressBar.setVisibility(View.GONE);
                         }
+                    }else {
                         progressBar.setVisibility(View.GONE);
                     }
                 }

@@ -215,29 +215,31 @@ public class EditCoursesActivity extends AppCompatActivity {
         map.put("urlCover",urlCover);
 
         database.getReference(getString(R.string.name_class)).child(userId).child(idClass).updateChildren(map).addOnCompleteListener(this, task -> {
-            loadingProgress.dismissLoadingProgress();
-            uploadImage(firebaseUser,database,storageReference,idClass);
-            database.getReference(getString(R.string.name_class_member)).child(idClass).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                        ModelHome modelHome = dataSnapshot.getValue(ModelHome.class);
-                        if (modelHome !=null){
-                            String userIdMember = modelHome.getUserId();
-                            loadingProgress.dismissLoadingProgress();
-                            memberClassUpdate(userIdMember,idClass,database,urlCover);
+            if (task.isSuccessful()){
+                loadingProgress.dismissLoadingProgress();
+                uploadImage(firebaseUser,database,storageReference,idClass);
+                database.getReference(getString(R.string.name_class_member)).child(idClass).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                            ModelHome modelHome = dataSnapshot.getValue(ModelHome.class);
+                            if (modelHome !=null){
+                                String userIdMember = modelHome.getUserId();
+                                loadingProgress.dismissLoadingProgress();
+                                memberClassUpdate(userIdMember,idClass,database,urlCover);
+                            }
                         }
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                }
-            });
-        }).addOnFailureListener(this, e -> {
-            Toast.makeText(EditCoursesActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
-            loadingProgress.dismissLoadingProgress();
+                    }
+                });
+            }else {
+                Toast.makeText(EditCoursesActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
+                loadingProgress.dismissLoadingProgress();
+            }
         });
     }
 
@@ -253,11 +255,13 @@ public class EditCoursesActivity extends AppCompatActivity {
         map.put("urlCover",urlCover);
 
         database.getReference(getString(R.string.name_class)).child(userIdMember).child(idClass).updateChildren(map).addOnCompleteListener(this, task -> {
-            loadingProgress.dismissLoadingProgress();
-            Toast.makeText(EditCoursesActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
-        }).addOnFailureListener(this, e -> {
-            loadingProgress.dismissLoadingProgress();
-            Toast.makeText(EditCoursesActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
+            if (task.isSuccessful()){
+                loadingProgress.dismissLoadingProgress();
+                Toast.makeText(EditCoursesActivity.this, R.string.data_update,Toast.LENGTH_SHORT).show();
+            } else {
+                loadingProgress.dismissLoadingProgress();
+                Toast.makeText(EditCoursesActivity.this,getText(R.string.update_failed),Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -298,29 +302,30 @@ public class EditCoursesActivity extends AppCompatActivity {
                 }
                 return fileReference.getDownloadUrl();
             }).addOnCompleteListener(this, task -> {
-                Uri downloadUri = task.getResult();
-                assert downloadUri != null;
-                String myUri = downloadUri.toString();
+                if (task.isSuccessful()){
+                    Uri downloadUri = task.getResult();
+                    assert downloadUri != null;
+                    String myUri = downloadUri.toString();
 
-                Map<String, Object> map = new HashMap<>();
-                map.put("urlCover", myUri);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("urlCover", myUri);
 
-                database.getReference(getString(R.string.name_class)).child(userId).child(idClass).updateChildren(map).addOnCompleteListener(this, taskUpdate -> {
-                    loadingProgress.dismissLoadingProgress();
-                    Toast.makeText(EditCoursesActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
-
-                    startActivity(new Intent(EditCoursesActivity.this, MainNavActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                    finish();
-
-                }).addOnFailureListener(this, e -> {
+                    database.getReference(getString(R.string.name_class)).child(userId).child(idClass).updateChildren(map).addOnCompleteListener(this, taskUpdate -> {
+                        if (task.isSuccessful()){
+                            loadingProgress.dismissLoadingProgress();
+                            Toast.makeText(EditCoursesActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(EditCoursesActivity.this, MainNavActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                            finish();
+                        }else {
+                            loadingProgress.dismissLoadingProgress();
+                            Toast.makeText(EditCoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
                     loadingProgress.dismissLoadingProgress();
                     Toast.makeText(EditCoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
-                });
-
-            }).addOnFailureListener(this, e -> {
-                loadingProgress.dismissLoadingProgress();
-                Toast.makeText(EditCoursesActivity.this, R.string.update_picture_failed, Toast.LENGTH_SHORT).show();
+                }
             });
 
         } else {

@@ -196,16 +196,16 @@ public class JoinCoursesActivity extends AppCompatActivity {
         Map<String, Object> mapClass = new HashMap<>();
         mapClass.put("userId", userId);
         database.getReference(getString(R.string.name_class)).child(idClass).child(getString(R.string.name_class_member)).child(userId).updateChildren(mapClass).addOnCompleteListener(this, taskClass -> {
-
-            loadingProgress.dismissLoadingProgress();
-            Toast.makeText(JoinCoursesActivity.this, R.string.join_class,Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(JoinCoursesActivity.this, MainNavActivity.class));
-            overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
-            finish();
-
-        }).addOnFailureListener(this, e -> {
-            Toast.makeText(JoinCoursesActivity.this,getText(R.string.join_failed),Toast.LENGTH_SHORT).show();
-            loadingProgress.dismissLoadingProgress();
+            if (taskClass.isSuccessful()){
+                loadingProgress.dismissLoadingProgress();
+                Toast.makeText(JoinCoursesActivity.this, R.string.join_class,Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(JoinCoursesActivity.this, MainNavActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                finish();
+            }else {
+                Toast.makeText(JoinCoursesActivity.this,getText(R.string.join_failed),Toast.LENGTH_SHORT).show();
+                loadingProgress.dismissLoadingProgress();
+            }
         });
 
     }
