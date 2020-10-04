@@ -148,7 +148,7 @@ public class EditCoursesActivity extends AppCompatActivity {
                     return;
                 }
                 if (firebaseUser != null) {
-                    editClass(firebaseUser,database,idClass,urlCover);
+                    editClass(database,idClass,urlCover);
                 }
             }
         });
@@ -182,7 +182,7 @@ public class EditCoursesActivity extends AppCompatActivity {
         edtCour.setText(courses);
     }
 
-    private void editClass(FirebaseUser firebaseUser, FirebaseDatabase database, String idClass, String urlCover) {
+    private void editClass(FirebaseDatabase database, String idClass, String urlCover) {
 
         loadingProgress.startLoadingProgress();
 
@@ -216,7 +216,7 @@ public class EditCoursesActivity extends AppCompatActivity {
         database.getReference(getString(R.string.name_class)).child(idClass).updateChildren(map).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()){
                 loadingProgress.dismissLoadingProgress();
-                uploadImage(firebaseUser,database,storageReference,idClass);
+                uploadImage(database,storageReference,idClass);
                 database.getReference(getString(R.string.name_class_member)).child(idClass).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -288,12 +288,11 @@ public class EditCoursesActivity extends AppCompatActivity {
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private void uploadImage(FirebaseUser firebaseUser, FirebaseDatabase database, StorageReference storageReference, String idClass) {
+    private void uploadImage(FirebaseDatabase database, StorageReference storageReference, String idClass) {
 
         loadingProgress.startLoadingProgress();
         if (uriImage != null) {
-            String userId = firebaseUser.getUid();
-            StorageReference fileReference = storageReference.child(userId).child(idClass).child(idClass+"."+getFileExtension(uriImage));
+            StorageReference fileReference = storageReference.child(idClass).child(idClass+"."+getFileExtension(uriImage));
             taskUpload = fileReference.putFile(uriImage);
             taskUpload.continueWithTask(task -> {
                 if (!task.isSuccessful()) {
@@ -309,7 +308,7 @@ public class EditCoursesActivity extends AppCompatActivity {
                     Map<String, Object> map = new HashMap<>();
                     map.put("urlCover", myUri);
 
-                    database.getReference(getString(R.string.name_class)).child(userId).child(idClass).updateChildren(map).addOnCompleteListener(this, taskUpdate -> {
+                    database.getReference(getString(R.string.name_class)).child(idClass).updateChildren(map).addOnCompleteListener(this, taskUpdate -> {
                         if (task.isSuccessful()){
                             loadingProgress.dismissLoadingProgress();
                             Toast.makeText(EditCoursesActivity.this, R.string.update_picture, Toast.LENGTH_SHORT).show();

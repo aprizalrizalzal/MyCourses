@@ -1,9 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.activity.detail.MetingDetailActivity">
 
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/app_bar" />
+
+    <com.github.barteksc.pdfviewer.PDFView
+        android:id="@+id/pdf_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/pathRelative"
+        app:layout_constraintTop_toBottomOf="@+id/appBar" />
+
+    <RelativeLayout
+        android:id="@+id/pathRelative"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent">
+
+            <ImageButton
+                android:id="@+id/btnFirst"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_padding"
+                android:src="@drawable/ic_baseline_first_play"
+                style="?android:attr/checkboxStyle"
+                android:contentDescription="@string/first" />
+
+            <ImageButton
+                android:id="@+id/btnPlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_padding"
+                android:visibility="invisible"
+                style="?android:attr/checkboxStyle"
+                android:src="@drawable/ic_baseline_play_circle_outline"
+                android:contentDescription="@string/play" />
+
+            <ImageButton
+                android:id="@+id/btnPause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_padding"
+                android:visibility="gone"
+                style="?android:attr/checkboxStyle"
+                android:src="@drawable/ic_baseline_pause_circle_outline"
+                android:contentDescription="@string/pause" />
+
+            <ImageButton
+                android:id="@+id/btnLast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_padding"
+                style="?android:attr/checkboxStyle"
+                android:src="@drawable/ic_baseline_last_play"
+                android:contentDescription="@string/last" />
+
+            <ImageButton
+                android:id="@+id/btnStop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_padding"
+                android:visibility="gone"
+                style="?android:attr/checkboxStyle"
+                android:src="@drawable/ic_baseline_stop"
+                android:contentDescription="@string/stop" />
+
+        </LinearLayout>
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

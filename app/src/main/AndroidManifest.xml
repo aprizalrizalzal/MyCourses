@@ -12,12 +12,16 @@
 
     <application
         android:allowBackup="true"
+        android:name=".MyCoursesActivity"
         android:icon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.home.activity.detail.MetingDetailActivity"></activity>
+        <activity
+            android:name=".ui.home.activity.detail.MetingDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.home.activity.CreateMetingActivity"
             android:screenOrientation="portrait"

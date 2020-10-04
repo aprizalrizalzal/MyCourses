@@ -34,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -131,7 +132,12 @@ public class MetingActivity extends AppCompatActivity {
     private void metingClass(String classId, FirebaseDatabase database) {
         if (classId != null) {
             progressBar.setVisibility(View.VISIBLE);
-            database.getReference(getString(R.string.name_class)).child(classId).child(getString(R.string.meting)).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            DatabaseReference databaseReference;
+            databaseReference = database.getReference(getString(R.string.name_class)).child(classId).child(getString(R.string.meting));
+            databaseReference.keepSynced(true);
+
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()){
@@ -163,35 +169,9 @@ public class MetingActivity extends AppCompatActivity {
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_nav, menu);
-        MenuItem itemSearch = menu.findItem(R.id.action_search);
-        itemSearch.setVisible(false);
-        MenuItem itemSetting = menu.findItem(R.id.action_setting);
-        itemSetting.setVisible(false);
-        MenuItem itemHelp = menu.findItem(R.id.action_help);
-        itemHelp.setOnMenuItemClickListener(menuItem -> {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MetingActivity.this);
-            alertDialogBuilder
-                    .setTitle(R.string.action_help)
-                    .setMessage(R.string.help_or_questions)
-                    .setCancelable(true)
-                    .setNeutralButton(R.string.yes, (dialog, id) -> {
-                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                        emailIntent.setType("text/plain");
-                        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"aprizal040498@gmail.com"});
-                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
-                        emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.sign_in) + "\n \n");
-
-                        if (emailIntent.resolveActivity(this.getPackageManager()) != null) {
-                            this.startActivity(emailIntent);
-                        }
-                    });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(getDrawable(R.drawable.bg_costume));
-            alertDialog.show();
-            return true;
-        });
-
+        getMenuInflater().inflate(R.menu.main_meeting, menu);
+        MenuItem itemClasswork = menu.findItem(R.id.action_class);
+        MenuItem itemMember = menu.findItem(R.id.action_member);
         return true;
     }
 

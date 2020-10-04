@@ -43,7 +43,7 @@
                 android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/imgBtnSettings"
+                app:layout_constraintEnd_toStartOf="@+id/btnDownloadDoc"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="@string/title" />
@@ -65,18 +65,30 @@
                 tools:text="@string/info" />
 
             <ImageButton
-                android:id="@+id/imgBtnSettings"
-                style="?android:attr/checkboxStyle"
+                android:id="@+id/btnDownloadDoc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
+                style="?android:attr/checkboxStyle"
                 android:padding="@dimen/activity_horizontal_padding"
-                android:contentDescription="@string/action_settings"
-                android:elevation="2dp"
-                android:src="@drawable/ic_baseline_more_vert"
+                android:contentDescription="@string/download_doc"
+                android:src="@drawable/ic_baseline_download"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_item_titleMeting"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_item_titleMeting" />
+
+            <ImageButton
+                android:id="@+id/btnDeleteDoc"
+                style="?android:attr/checkboxStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_padding"
+                android:visibility="invisible"
+                android:contentDescription="@string/delete_doc"
+                android:src="@drawable/ic_baseline_delete"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_item_titleMeting"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_item_titleMeting" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </RelativeLayout>

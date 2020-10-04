@@ -278,16 +278,11 @@ public class CreateMetingActivity extends AppCompatActivity {
                                 tvInfoDialog.setText(modelMeting.getInformation());
                                 edtInfo.setText(modelMeting.getInformation());
 
-                                if (modelMeting.getUrlDocument() !=null){
-                                    tvDocDialog.setText(courses.toLowerCase()+"_"+modelMeting.getMeting()+".pdf");
-                                    edtAttachDoc.setText(courses.toLowerCase()+"_"+modelMeting.getMeting()+".pdf");
-                                } else if (modelMeting.getUrlAudio().equals(getString(R.string.urlAudio))){
-                                    tvAudioDialog.setText(null);
-                                    edtAttachAudio.setText(null);
-                                } else {
-                                    tvAudioDialog.setText(courses.toLowerCase()+"_"+modelMeting.getMeting()+".mp3");
-                                    edtAttachAudio.setText(courses.toLowerCase()+"_"+modelMeting.getMeting()+".mp3");
-                                }
+                                tvDocDialog.setText(modelMeting.getUrlDocument());
+                                edtAttachDoc.setText(modelMeting.getUrlDocument());
+
+                                tvAudioDialog.setText(modelMeting.getUrlAudio());
+                                edtAttachAudio.setText(modelMeting.getUrlAudio());
 
                                 tvUpdateDialog.setOnClickListener(viewUpdate -> {
                                     if (modelMeting.getUrlCover().equals(getString(R.string.urlCover))){
@@ -358,7 +353,7 @@ public class CreateMetingActivity extends AppCompatActivity {
 
         btnUpdate.setOnClickListener(view -> {
             if (haveConnection()){
-                //updateMeting(user,userId,classId,database);
+                editMeting(user,userId,classId,database);
             }
         });
     }
@@ -420,7 +415,28 @@ public class CreateMetingActivity extends AppCompatActivity {
         }
     }
 
-    /*private void updateMeting(FirebaseUser user, String userId, String classId, FirebaseDatabase database) {
+    private void editMeting(FirebaseUser user, String userId, String classId, FirebaseDatabase database) {
+        if (!validSpin()){
+            return;
+        }
+        spinMeting = spinnerMeting.getSelectedItem().toString();
+        database.getReference(getString(R.string.name_class)).child(classId).child(getString(R.string.meting)).child(spinMeting).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void updateMeting(FirebaseUser user, String userId, String classId, FirebaseDatabase database) {
         if (!validInfo() || !validDoc() || !validAudio()){
             return;
         }
@@ -428,14 +444,17 @@ public class CreateMetingActivity extends AppCompatActivity {
         spinMeting = spinnerMeting.getSelectedItem().toString();
         info = edtInfo.getText().toString();
         doc = edtAttachDoc.getText().toString();
-        audio = edtAttachAudio.getText().toString();
+        this.audio = edtAttachAudio.getText().toString();
 
         String idUser = user.getUid();
         if (idUser.equals(userId)){
             Map<String,Object> mapMeting = new HashMap<>();
+            mapMeting.put("urlCover",urlCover);
+            mapMeting.put("meting",spinMeting);
+            mapMeting.put("idMeting",spinMeting+classId);
             mapMeting.put("information",info);
             mapMeting.put("urlDocument",doc);
-            mapMeting.put("urlAudio",audio);
+            mapMeting.put("urlAudio", audio);
 
             database.getReference(getString(R.string.name_class)).child(classId).child(getString(R.string.meting)).child(spinMeting).setValue(mapMeting).addOnCompleteListener(this, task -> {
                 if (task.isSuccessful()){
@@ -446,7 +465,7 @@ public class CreateMetingActivity extends AppCompatActivity {
                 }
             });
         }
-    }*/
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
