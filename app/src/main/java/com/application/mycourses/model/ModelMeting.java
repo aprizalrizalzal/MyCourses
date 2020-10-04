@@ -5,19 +5,19 @@ public class ModelMeting {
     private String idMeting;
     private String meting;
     private String information;
-    private String document;
-    private String audio;
+    private String urlDocument;
+    private String urlAudio;
     private String urlCover;
 
     public ModelMeting() {
     }
 
-    public ModelMeting(String idMeting, String meting, String information, String document, String audio, String urlCover) {
+    public ModelMeting(String idMeting, String meting, String information, String urlDocument, String urlAudio, String urlCover) {
         this.idMeting = idMeting;
         this.meting = meting;
         this.information = information;
-        this.document = document;
-        this.audio = audio;
+        this.urlDocument = urlDocument;
+        this.urlAudio = urlAudio;
         this.urlCover = urlCover;
     }
 
@@ -33,12 +33,12 @@ public class ModelMeting {
         return information;
     }
 
-    public String getDocument() {
-        return document;
+    public String getUrlDocument() {
+        return urlDocument;
     }
 
-    public String getAudio() {
-        return audio;
+    public String getUrlAudio() {
+        return urlAudio;
     }
 
     public String getUrlCover() {

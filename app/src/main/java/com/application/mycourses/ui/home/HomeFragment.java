@@ -78,23 +78,24 @@ public class HomeFragment extends Fragment implements HomeFragmentCallback {
                 if (snapshot.exists()) {
                     modelHomes.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                        if (dataSnapshot.child(getString(R.string.name_class_member)).child(userId).exists()){
-                            ModelHome modelHome = dataSnapshot.getValue(ModelHome.class);
-                            if (modelHome != null) {
-                                modelHomes.add(modelHome);
-                                homeAdapter = new HomeAdapter(getContext(), modelHomes, HomeFragment.this);
+                        ModelHome modelHome = dataSnapshot.getValue(ModelHome.class);
+                        try {
+                            if (dataSnapshot.child(getString(R.string.name_class_member)).child(userId).exists()){
+                                if (modelHome != null){
+                                    modelHomes.add(modelHome);
+                                    homeAdapter = new HomeAdapter(getContext(), modelHomes, HomeFragment.this);
+                                }
+                                rvHome.setAdapter(homeAdapter);
+                                rvHome.setLayoutManager(new LinearLayoutManager(getContext()));
+                                rvHome.setHasFixedSize(true);
                             }
-                            rvHome.setAdapter(homeAdapter);
-                            rvHome.setLayoutManager(new LinearLayoutManager(getContext()));
-                            rvHome.setHasFixedSize(true);
-                        }else {
+                        } catch (Exception e) {
                             readHome(user,database);
                         }
                     }
                 }
                 progressBar.setVisibility(View.GONE);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }

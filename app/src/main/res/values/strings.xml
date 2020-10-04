@@ -92,6 +92,7 @@
     <string name="settingLanguage">To set Language, you must make Display to the System \n\n<u>Open Settings> General Management> Language and Input> Language</u></string>
     <string name="save">Save</string>
     <string name="update">Update</string>
+    <string name="up_or_del">Update Or Delete</string>
     <string name="prod">Study Program</string>
     <string name="num_id_class">Number Id Class</string>
     <string name="name">Name</string>
@@ -181,4 +182,15 @@
     <string name="blank_audio">Blank Audio</string>
     <string name="valid_data">Is the Data You Enter Correct?</string>
     <string name="not_have_file">Check Again if Your Data and Files Are Complete</string>
+    <string name="urlAudio">urlAudio</string>
+    <string name="urlCover">urlCover</string>
+    <string name="check">Check</string>
+    <string name="empty_meting">Meeting %s is empty, choose another or create</string>
+    <string name="delete_meting">Meeting %s was deleted successfully</string>
+    <string name="delete_field">Meeting %s Failed to delete</string>
+    <string name="valid_data_delete">Are you sure you want to delete the meeting %s</string>
+    <string name="doc">Document</string>
+    <string name="create_meeting">Create Meeting</string>
+    <string name="empty">null</string>
+    <string name="metingDialog">Meeting %s</string>
 </resources>

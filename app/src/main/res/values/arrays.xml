@@ -35,4 +35,9 @@
         <item>15</item>
         <item>16 (UAS)</item>
     </string-array>
+    <string-array name="spinCheck">
+        <item>Select</item>
+        <item>Create Meeting</item>
+        <item>Update Or Delete</item>
+    </string-array>
 </resources>

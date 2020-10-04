@@ -32,6 +32,16 @@
                 android:elevation="2dp"
                 android:orientation="horizontal">
 
+                <Spinner
+                    android:id="@+id/spinnerCheck"
+                    style="@style/Widget.AppCompat.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/spinCheck"
+                    android:padding="@dimen/activity_horizontal_padding"
+                    android:textAlignment="center"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/img_view"
                     android:layout_width="75dp"
@@ -42,13 +52,14 @@
                     android:src="@mipmap/ic_launcher_round"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerCheck" />
 
                 <ImageButton
                     android:id="@+id/btnAddCover"
                     style="@style/Widget.Design.FloatingActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="invisible"
                     android:contentDescription="@string/name"
                     android:elevation="2dp"
                     android:padding="4dp"
@@ -63,10 +74,10 @@
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/activity_vertical_margin"
                     android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="@+id/img_view"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/img_view"
-                    app:layout_constraintTop_toTopOf="@+id/img_view">
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerCheck">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -87,82 +98,119 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
-                android:id="@+id/labeled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/linear"
-                android:layout_marginVertical="4dp"
-                android:background="@drawable/bg_costume"
-                android:elevation="2dp"
-                android:orientation="vertical"
-                android:padding="@dimen/activity_horizontal_padding"
-                tools:ignore="UselessParent">
+                android:layout_below="@+id/linear"
+                android:orientation="vertical">
 
-                <TextView
+                <LinearLayout
+                    android:id="@+id/labeled"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/info"
-                    android:textSize="14sp" />
+                    android:layout_marginVertical="4dp"
+                    android:background="@drawable/bg_costume"
+                    android:visibility="gone"
+                    android:elevation="2dp"
+                    android:orientation="vertical"
+                    android:padding="@dimen/activity_horizontal_padding"
+                    tools:ignore="UselessParent">
 
-                <EditText
-                    android:id="@+id/edtInfo"
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/info"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/edtInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_vertical_margin"
+                        android:autofillHints="@string/info"
+                        android:drawableEnd="@drawable/ic_baseline_assignment"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/info"
+                        android:inputType="text"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvAttachDoc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/upload_document_file"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/edtAttachDoc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_vertical_margin"
+                        android:autofillHints="@string/pdf"
+                        android:drawableEnd="@drawable/ic_baseline_book"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/pdf"
+                        android:inputType="text"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvAttachAudio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/upload_audio_file"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/edtAttachAudio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="@string/audio"
+                        android:drawableEnd="@drawable/ic_baseline_audio"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/audio"
+                        android:inputType="text"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lineBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:autofillHints="@string/info"
-                    android:drawableEnd="@drawable/ic_baseline_assignment"
-                    android:focusableInTouchMode="true"
-                    android:hint="@string/info"
-                    android:inputType="text"
-                    android:textSize="14sp" />
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvAttachDoc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/upload_document_file"
-                    android:textSize="14sp" />
+                    <Button
+                        android:id="@+id/btnCheck"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/activity_horizontal_margin"
+                        android:background="@drawable/bg_click_btn"
+                        android:text="@string/check"
+                        android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
-                <EditText
-                    android:id="@+id/edtAttachDoc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:autofillHints="@string/pdf"
-                    android:drawableEnd="@drawable/ic_baseline_book"
-                    android:focusableInTouchMode="true"
-                    android:hint="@string/pdf"
-                    android:inputType="text"
-                    android:textSize="14sp" />
+                    <Button
+                        android:id="@+id/btnSave"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/activity_horizontal_margin"
+                        android:background="@drawable/bg_click_btn"
+                        android:text="@string/save"
+                        android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/tvAttachAudio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/upload_audio_file"
-                    android:textSize="14sp" />
+                    <Button
+                        android:id="@+id/btnUpdate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/activity_horizontal_margin"
+                        android:background="@drawable/bg_click_btn"
+                        android:text="@string/update"
+                        android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
-                <EditText
-                    android:id="@+id/edtAttachAudio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="@string/audio"
-                    android:drawableEnd="@drawable/ic_baseline_audio"
-                    android:focusableInTouchMode="true"
-                    android:hint="@string/audio"
-                    android:inputType="text"
-                    android:textSize="14sp" />
-
-                <Button
-                    android:id="@+id/btnSave"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/bg_click_btn"
-                    android:enabled="false"
-                    android:text="@string/save"
-                    android:textColor="@drawable/cr_txt_click_foreground_foreground_inverse"
-                    android:textSize="16sp" />
+                </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>

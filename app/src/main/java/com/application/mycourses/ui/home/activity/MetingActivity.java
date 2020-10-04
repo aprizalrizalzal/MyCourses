@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.application.mycourses.MainNavActivity;
 import com.application.mycourses.R;
@@ -108,14 +109,18 @@ public class MetingActivity extends AppCompatActivity {
 
         String idUser = user.getUid();
         fabCreate.setOnClickListener(view -> {
-            Intent intentMeting = new Intent(MetingActivity.this, CreateMetingActivity.class);
-            intentMeting.putExtra("userId",userId);
-            intentMeting.putExtra("urlCover",urlCover);
-            intentMeting.putExtra("courses",courses);
-            intentMeting.putExtra("classId",classId);
-            startActivity(intentMeting);
-            overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
-            finish();
+            if (haveConnection()){
+                Intent intentMeting = new Intent(MetingActivity.this, CreateMetingActivity.class);
+                intentMeting.putExtra("userId",userId);
+                intentMeting.putExtra("urlCover",urlCover);
+                intentMeting.putExtra("courses",courses);
+                intentMeting.putExtra("classId",classId);
+                startActivity(intentMeting);
+                overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                finish();
+            } else {
+                Toast.makeText(this, getString(R.string.not_have_connection), Toast.LENGTH_SHORT).show();
+            }
         });
 
         if (idUser.equals(userId)){

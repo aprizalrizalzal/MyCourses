@@ -1,6 +1,8 @@
 package com.application.mycourses.ui.home.activity;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.mycourses.R;
 import com.application.mycourses.model.ModelMeting;
+import com.application.mycourses.ui.home.activity.detail.MetingDetailActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -109,6 +112,12 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
                 popupMenu.show();
             });
 
+            itemView.setOnClickListener(view -> {
+                Intent intentDetail = new Intent(metingContext, MetingDetailActivity.class);
+                Activity activity = (Activity) metingContext;
+                metingContext.startActivity(intentDetail);
+                activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+            });
         }
 
         private void downloadDoc(FirebaseUser user, ModelMeting modelMeting, FirebaseDatabase database) {

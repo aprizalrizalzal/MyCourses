@@ -186,7 +186,6 @@ public class EditCoursesActivity extends AppCompatActivity {
 
         loadingProgress.startLoadingProgress();
 
-        String userId = firebaseUser.getUid();
         String saveCurrencyDate, saveCurrencyTime;
         university = edtUni.getText().toString().toUpperCase();
         faculty = edtFac.getText().toString().toUpperCase();
@@ -214,7 +213,7 @@ public class EditCoursesActivity extends AppCompatActivity {
         map.put("university",university);
         map.put("urlCover",urlCover);
 
-        database.getReference(getString(R.string.name_class)).child(userId).child(idClass).updateChildren(map).addOnCompleteListener(this, task -> {
+        database.getReference(getString(R.string.name_class)).child(idClass).updateChildren(map).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()){
                 loadingProgress.dismissLoadingProgress();
                 uploadImage(firebaseUser,database,storageReference,idClass);
