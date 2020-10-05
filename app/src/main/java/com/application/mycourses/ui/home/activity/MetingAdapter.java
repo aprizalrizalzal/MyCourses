@@ -25,8 +25,10 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.mycourses.R;
+import com.application.mycourses.model.ModelHome;
 import com.application.mycourses.model.ModelMeting;
 import com.application.mycourses.ui.home.activity.detail.MetingDetailActivity;
+import com.application.mycourses.ui.home.activity.meeting.EditMetingActivity;
 import com.application.mycourses.ui.utils.LoadingProgress;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -111,7 +113,7 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
                         .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
                         .into(imageView);
             }
-            tvTitle.setText(modelMeting.getMeting());
+            tvTitle.setText(metingContext.getString(R.string.metingDialog,modelMeting.getMeting()));
             tvInfo.setText(modelMeting.getInformation());
 
             final File file = new File(itemView.getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), modelMeting.getIdMeting());
@@ -126,9 +128,13 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
             itemView.setOnClickListener(view -> {
                 if (file.exists()){
                     Intent intentDetail = new Intent(metingContext, MetingDetailActivity.class);
+                    intentDetail.putExtra("classId",modelMeting.getClassId());
                     intentDetail.putExtra("idMeting",modelMeting.getIdMeting());
+                    intentDetail.putExtra("userId",modelMeting.getUserId());
+                    intentDetail.putExtra("courses",modelMeting.getCourses());
                     intentDetail.putExtra("meting",modelMeting.getMeting());
                     intentDetail.putExtra("urlCover",modelMeting.getUrlCover());
+                    intentDetail.putExtra("urlDocument",modelMeting.getUrlDocument());
                     intentDetail.putExtra("urlAudio",modelMeting.getUrlAudio());
                     Activity activity = (Activity) metingContext;
                     metingContext.startActivity(intentDetail);
@@ -138,12 +144,31 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
                 }
             });
 
+            String userId = user.getUid();
+            if (modelMeting.getUserId().equals(userId)){
+                imgBtnSettings.setVisibility(View.VISIBLE);
+            } else {
+                imgBtnSettings.setVisibility(View.INVISIBLE);
+            }
+
             imgBtnSettings.setOnClickListener(view -> {
                 PopupMenu popup = new PopupMenu(metingContext,view);
                 popup.setOnMenuItemClickListener(menuItem -> {
                     switch (menuItem.getItemId()) {
                         case R.id.action_edit:
-                            editIdMeting(modelMeting,user);
+                            Intent intentDetail = new Intent(metingContext, EditMetingActivity.class);
+                            intentDetail.putExtra("classId",modelMeting.getClassId());
+                            intentDetail.putExtra("idMeting",modelMeting.getIdMeting());
+                            intentDetail.putExtra("userId",modelMeting.getUserId());
+                            intentDetail.putExtra("courses",modelMeting.getCourses());
+                            intentDetail.putExtra("meting",modelMeting.getMeting());
+                            intentDetail.putExtra("information",modelMeting.getInformation());
+                            intentDetail.putExtra("urlCover",modelMeting.getUrlCover());
+                            intentDetail.putExtra("urlDocument",modelMeting.getUrlDocument());
+                            intentDetail.putExtra("urlAudio",modelMeting.getUrlAudio());
+                            Activity activity = (Activity) metingContext;
+                            metingContext.startActivity(intentDetail);
+                            activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
                             return true;
                         case R.id.action_delete:
                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(metingContext);
@@ -152,7 +177,7 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
                                     .setMessage(metingContext.getString(R.string.delete_your_class,modelMeting.getMeting()))
                                     .setCancelable(false)
                                     .setPositiveButton(metingContext.getString(R.string.yes), (dialog, id) -> {
-                                        deleteIdMeting(loadingProgress,modelMeting,database,user);
+                                        deleteIdMeting(metingContext,loadingProgress,modelMeting,database);
                                     })
                                     .setNegativeButton(R.string.no, (dialog, id) -> dialog.cancel());
                             AlertDialog alertDialog = alertDialogBuilder.create();
@@ -203,13 +228,17 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
             });
         }
 
-        private void editIdMeting(ModelMeting modelMeting, FirebaseUser user) {
-
-        }
-
-
-        private void deleteIdMeting(LoadingProgress loadingProgress, ModelMeting modelMeting, FirebaseDatabase database, FirebaseUser user) {
-
+        private void deleteIdMeting(Context metingContext, LoadingProgress loadingProgress, ModelMeting modelMeting, FirebaseDatabase database) {
+            loadingProgress.startLoadingProgress();
+            database.getReference(metingContext.getString(R.string.name_class)).child(modelMeting.getClassId()).child(metingContext.getString(R.string.meting)).child(modelMeting.getMeting()).removeValue().addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    loadingProgress.dismissLoadingProgress();
+                    Toast.makeText(metingContext,metingContext.getString(R.string.delete_and_left_class),Toast.LENGTH_SHORT).show();
+                } else {
+                    loadingProgress.dismissLoadingProgress();
+                    Toast.makeText(metingContext,metingContext.getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         private void downloadDoc(Context metingContext, ModelMeting modelMeting, StorageReference httpsReference, File file, LoadingProgress loadingProgress) {

@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_class"
-        android:orderInCategory="1"
-        android:title="@string/action_class"
+        android:id="@+id/action_class_members"
+        android:orderInCategory="2"
+        android:title="@string/action_class_member"
         app:showAsAction="withText"/>
 
     <item
-        android:id="@+id/action_member"
-        android:orderInCategory="2"
-        android:title="@string/action_member"
+        android:id="@+id/action_leave_class"
+        android:orderInCategory="3"
+        android:title="@string/action_leave_class"
         app:showAsAction="withText"/>
 </menu>

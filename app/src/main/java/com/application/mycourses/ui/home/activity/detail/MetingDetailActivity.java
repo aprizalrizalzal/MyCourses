@@ -30,9 +30,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MetingDetailActivity extends AppCompatActivity {
 
-    private RelativeLayout relativeLayout;
     private PDFView pdfView;
-    private String idMeting,meting,urlCover,urlAudio;
+    private String classId, userId,idMeting,meting,courses,urlCover,urlDocument,urlAudio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +39,14 @@ public class MetingDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_meting_detail);
 
         Intent intent = getIntent();
-        idMeting = intent.getStringExtra("idMeting");
+        classId = intent.getStringExtra("classId");
+        userId = intent.getStringExtra("userId");
+        courses = intent.getStringExtra("courses");
         meting = intent.getStringExtra("meting");
+        idMeting = intent.getStringExtra("idMeting");
         urlCover = intent.getStringExtra("urlCover");
+        urlDocument = intent.getStringExtra("urlDocument");
         urlAudio = intent.getStringExtra("urlAudio");
-
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

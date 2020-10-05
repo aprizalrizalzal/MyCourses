@@ -88,16 +88,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        final FirebaseAuth firebaseAuth;
-        final FirebaseUser firebaseUser;
+        final FirebaseAuth auth;
+        final FirebaseUser user;
         final FirebaseDatabase database;
         final ImageButton imgBtnSettings;
         final CircleImageView imgViewHome;
         final TextView titleCourses,titleUniversity,titleFaculty,titleStudy,titleSemester;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            firebaseAuth = FirebaseAuth.getInstance();
-            firebaseUser = firebaseAuth.getCurrentUser();
+            auth = FirebaseAuth.getInstance();
+            user = auth.getCurrentUser();
             database = FirebaseDatabase.getInstance();
             titleCourses = itemView.findViewById(R.id.tv_item_courses);
             imgBtnSettings = itemView.findViewById(R.id.imgBtnSettings);
@@ -123,6 +123,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                         .into(imgViewHome);
             }
 
+            String userId = user.getUid();
+            if (modelHome.getUserId().equals(userId)){
+                imgBtnSettings.setVisibility(View.VISIBLE);
+            } else {
+                imgBtnSettings.setVisibility(View.INVISIBLE);
+            }
+
             imgBtnSettings.setOnClickListener(view -> {
                 PopupMenu popup = new PopupMenu(contextHome,view);
                 popup.setOnMenuItemClickListener(menuItem -> {
@@ -131,11 +138,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                             shareIdClass(modelHome,callback);
                             return true;
                         case R.id.action_edit:
-                            if (modelHome.getUserId().equals(firebaseUser.getUid())){
-                                editIdClass(modelHome,firebaseUser);
-                            } else {
-                                Toast.makeText(contextHome, contextHome.getString(R.string.not_edit_class),Toast.LENGTH_SHORT).show();
-                            }
+                                editIdClass(modelHome,user);
                             return true;
                         case R.id.action_delete:
                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(contextHome);
@@ -144,7 +147,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                                     .setMessage(contextHome.getString(R.string.delete_your_class,modelHome.getCourses()))
                                     .setCancelable(false)
                                     .setPositiveButton(contextHome.getString(R.string.yes), (dialog, id) -> {
-                                        deleteIdClass(loadingProgress,modelHome,database,firebaseUser);
+                                        deleteIdClass(loadingProgress,modelHome,database,user);
                                     })
                                     .setNegativeButton(R.string.no, (dialog, id) -> dialog.cancel());
                             AlertDialog alertDialog = alertDialogBuilder.create();
@@ -182,8 +185,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             callback.onShareClick(modelHome);
         }
 
-        private void editIdClass(ModelHome modelHome, FirebaseUser firebaseUser) {
-            String userId = firebaseUser.getUid();
+        private void editIdClass(ModelHome modelHome, FirebaseUser user) {
+            String userId = user.getUid();
             if (userId.equals(modelHome.getUserId())){
                 Intent intent = new Intent(contextHome, EditCoursesActivity.class);
                 intent.putExtra("classId",modelHome.getClassId());
@@ -205,19 +208,26 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 loadingProgress.startLoadingProgress();
                 database.getReference(contextHome.getString(R.string.name_class)).child(modelHome.getClassId()).removeValue().addOnCompleteListener(task -> {
                     if (task.isSuccessful()){
-                        loadingProgress.dismissLoadingProgress();
-                        Intent intent = new Intent(contextHome, MainNavActivity.class);
-                        Toast.makeText(contextHome,contextHome.getString(R.string.delete_class),Toast.LENGTH_SHORT).show();
-                        contextHome.startActivity(intent);
-                        Activity activity = (Activity) contextHome;
-                        activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
-                        activity.finish();
+                        database.getReference(contextHome.getString(R.string.name_class)).child(modelHome.getClassId()).child(contextHome.getString(R.string.name_class_member)).child(userId).removeValue().addOnCompleteListener(taskMember -> {
+                            if (task.isSuccessful()){
+                                loadingProgress.dismissLoadingProgress();
+                                Intent intent = new Intent(contextHome, MainNavActivity.class);
+                                Toast.makeText(contextHome,contextHome.getString(R.string.delete_class),Toast.LENGTH_SHORT).show();
+                                contextHome.startActivity(intent);
+                                Activity activity = (Activity) contextHome;
+                                activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                                activity.finish();
+                            } else {
+                                loadingProgress.dismissLoadingProgress();
+                                Toast.makeText(contextHome,contextHome.getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     } else {
                         loadingProgress.dismissLoadingProgress();
                         Toast.makeText(contextHome,contextHome.getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
                     }
                 });
-            } else {
+            } /*else {
                 loadingProgress.startLoadingProgress();
                 database.getReference(contextHome.getString(R.string.name_class)).child(modelHome.getClassId()).child(contextHome.getString(R.string.name_class_member)).child(userId).removeValue().addOnCompleteListener(task -> {
                     if (task.isSuccessful()){
@@ -233,7 +243,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                         Toast.makeText(contextHome,contextHome.getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
                     }
                 });
-            }
+            }*/
         }
     }
 }

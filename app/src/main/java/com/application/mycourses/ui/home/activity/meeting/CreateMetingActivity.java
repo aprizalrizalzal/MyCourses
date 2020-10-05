@@ -216,64 +216,15 @@ public class CreateMetingActivity extends AppCompatActivity {
         String idUser = user.getUid();
         if (idUser.equals(userId)){
             Map<String,Object> mapMeting = new HashMap<>();
+            mapMeting.put("classId",classId);
             mapMeting.put("urlCover","urlCover");
             mapMeting.put("meting",spinMeting);
+            mapMeting.put("courses",courses);
             mapMeting.put("idMeting",spinMeting+classId);
+            mapMeting.put("userId",userId);
             mapMeting.put("information",info);
             mapMeting.put("urlDocument",doc);
             mapMeting.put("urlAudio",audio);
-
-            database.getReference(getString(R.string.name_class)).child(classId).child(getString(R.string.meting)).child(spinMeting).setValue(mapMeting).addOnCompleteListener(this, task -> {
-                if (task.isSuccessful()){
-                    uploadImage();
-                } else {
-                    loadingProgress.dismissLoadingProgress();
-                    Toast.makeText(CreateMetingActivity.this, getString(R.string.update_failed),Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
-
-    private void editMeting(FirebaseUser user, String userId, String classId, FirebaseDatabase database) {
-        if (!validSpin()){
-            return;
-        }
-        spinMeting = spinnerMeting.getSelectedItem().toString();
-        database.getReference(getString(R.string.name_class)).child(classId).child(getString(R.string.meting)).child(spinMeting).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void updateMeting(FirebaseUser user, String userId, String classId, FirebaseDatabase database) {
-        if (!validInfo() || !validDoc() || !validAudio()){
-            return;
-        }
-        loadingProgress.startLoadingProgress();
-        spinMeting = spinnerMeting.getSelectedItem().toString();
-        info = edtInfo.getText().toString();
-        doc = edtAttachDoc.getText().toString();
-        this.audio = edtAttachAudio.getText().toString();
-
-        String idUser = user.getUid();
-        if (idUser.equals(userId)){
-            Map<String,Object> mapMeting = new HashMap<>();
-            mapMeting.put("urlCover",urlCover);
-            mapMeting.put("meting",spinMeting);
-            mapMeting.put("idMeting",spinMeting+classId);
-            mapMeting.put("information",info);
-            mapMeting.put("urlDocument",doc);
-            mapMeting.put("urlAudio", audio);
 
             database.getReference(getString(R.string.name_class)).child(classId).child(getString(R.string.meting)).child(spinMeting).setValue(mapMeting).addOnCompleteListener(this, task -> {
                 if (task.isSuccessful()){

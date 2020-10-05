@@ -9,6 +9,7 @@
         android:id="@+id/tv_item_courses"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
         android:textAlignment="textEnd"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/imgBtnSettings"

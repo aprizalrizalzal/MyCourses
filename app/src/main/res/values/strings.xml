@@ -193,8 +193,6 @@
     <string name="create_meeting">Create Meeting</string>
     <string name="empty">null</string>
     <string name="metingDialog">Meeting %s</string>
-    <string name="action_get_doc">Get the Doc</string>
-    <string name="action_dis_doc">Discard Doc</string>
     <string name="pause">Pause</string>
     <string name="last">Last</string>
     <string name="stop">Stop</string>
@@ -203,7 +201,10 @@
     <string name="not_download_doc">Sorry You Must Download the Document First</string>
     <string name="download_doc_success">Download Document %s Successful</string>
     <string name="download_doc_failed">Download Document %s Failed, Please Try Again</string>
-    <string name="action_class">Classwork</string>
-    <string name="action_member">Member</string>
     <string name="urlDoc">urlDocument</string>
+    <string name="action_leave_class">Leave class</string>
+    <string name="action_class_member">Class members</string>
+    <string name="action_classwork">Classwork</string>
+    <string name="metingView">%s Meeting %s</string>
+    <string name="delete_exit_class">You cannot leave the classroom. If you wish to leave, please return home and delete the class.</string>
 </resources>

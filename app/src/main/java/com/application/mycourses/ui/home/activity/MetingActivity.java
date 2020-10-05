@@ -24,6 +24,7 @@ import com.application.mycourses.MainNavActivity;
 import com.application.mycourses.R;
 import com.application.mycourses.model.ModelMeting;
 import com.application.mycourses.ui.home.activity.meeting.CreateMetingActivity;
+import com.application.mycourses.ui.utils.LoadingProgress;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.ads.AdRequest;
@@ -48,11 +49,11 @@ public class MetingActivity extends AppCompatActivity {
     private List<ModelMeting> modelMetings = new ArrayList<>();
     private MetingAdapter metingAdapter;
     private FirebaseUser user;
-    private FirebaseAuth auth;
-    private FloatingActionButton fabCreate;
     private FirebaseDatabase database;
+    private String classId, userId, urlCover, courses;
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView rvMeting;
+    private LoadingProgress loadingProgress;
     private ProgressBar progressBar;
 
     @Override
@@ -61,17 +62,19 @@ public class MetingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_meting);
 
         Intent intent = getIntent();
-        String userId = intent.getStringExtra("userId");
-        String urlCover = intent.getStringExtra("urlCover");
-        String courses = intent.getStringExtra("courses");
-        String classId = intent.getStringExtra("classId");
+        classId = intent.getStringExtra("classId");
+        userId = intent.getStringExtra("userId");
+        urlCover = intent.getStringExtra("urlCover");
+        courses = intent.getStringExtra("courses");
 
-        auth = FirebaseAuth.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
         refreshLayout = findViewById(R.id.swipeRefresh);
         rvMeting = findViewById(R.id.rvMeting);
         progressBar = findViewById(R.id.progressBar);
+
+        loadingProgress = new LoadingProgress(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,7 +108,7 @@ public class MetingActivity extends AppCompatActivity {
             metingClass(classId,database);
             refreshLayout.setRefreshing(false);
         });
-        fabCreate = findViewById(R.id.fabCreate);
+        FloatingActionButton fabCreate = findViewById(R.id.fabCreate);
 
         String idUser = user.getUid();
         fabCreate.setOnClickListener(view -> {
@@ -169,8 +172,34 @@ public class MetingActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_meeting, menu);
-        MenuItem itemClasswork = menu.findItem(R.id.action_class);
-        MenuItem itemMember = menu.findItem(R.id.action_member);
+        MenuItem itemMember = menu.findItem(R.id.action_class_members);
+        itemMember.setOnMenuItemClickListener(menuItem -> {
+
+           return true;
+        });
+        MenuItem itemLeave = menu.findItem(R.id.action_leave_class);
+        itemLeave.setOnMenuItemClickListener(menuItem -> {
+            String myId = user.getUid();
+            if (userId.equals(myId)){
+                Toast.makeText(MetingActivity.this,getString(R.string.delete_exit_class),Toast.LENGTH_SHORT).show();
+            } else {
+                loadingProgress.startLoadingProgress();
+                database.getReference(getString(R.string.name_class)).child(classId).child(getString(R.string.name_class_member)).child(myId).removeValue().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        loadingProgress.dismissLoadingProgress();
+                        Intent intent = new Intent(MetingActivity.this, MainNavActivity.class);
+                        Toast.makeText(MetingActivity.this,getString(R.string.delete_and_left_class),Toast.LENGTH_SHORT).show();
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                        finish();
+                    } else {
+                        loadingProgress.dismissLoadingProgress();
+                        Toast.makeText(MetingActivity.this,getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            return true;
+        });
         return true;
     }
 
