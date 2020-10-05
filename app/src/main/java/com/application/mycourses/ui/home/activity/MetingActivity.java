@@ -1,7 +1,6 @@
 package com.application.mycourses.ui.home.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +23,7 @@ import android.widget.Toast;
 import com.application.mycourses.MainNavActivity;
 import com.application.mycourses.R;
 import com.application.mycourses.model.ModelMeting;
+import com.application.mycourses.ui.home.activity.meeting.CreateMetingActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.ads.AdRequest;
@@ -40,7 +40,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

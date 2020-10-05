@@ -1,4 +1,4 @@
-package com.application.mycourses.ui.home.activity;
+package com.application.mycourses.ui.home.activity.meeting;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,13 +10,10 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -25,20 +22,16 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.application.mycourses.R;
-import com.application.mycourses.model.ModelHome;
-import com.application.mycourses.model.ModelMeting;
+import com.application.mycourses.ui.home.activity.MetingActivity;
 import com.application.mycourses.ui.utils.LoadingProgress;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -64,15 +57,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CreateMetingActivity extends AppCompatActivity {
 
-    private CircleImageView imgCreateCover, imgCoverDialog;
-    private Spinner spinCheck, spinnerMeting;
-    private LinearLayout labeled;
-    private ImageButton btnAddCover;
+    private CircleImageView imgCreateCover;
+    private Spinner spinnerMeting;
     private EditText edtInfo, edtAttachDoc, edtAttachAudio;
-    private Button btnCheck, btnUpdate, btnSave;
-    private Dialog dialog;
-    private TextView tvMeetingDialog,tvInfoDialog,tvDocDialog,tvAudioDialog,tvUpdateDialog,tvDeleteDialog;
-    private String check, spinMeting,info,doc,audio;
+    private Button btnSave;
+    private String spinMeting,info,doc,audio;
     private String userId, urlCover, courses, classId;
     private FirebaseDatabase database;
     private Uri uriImage,uriDoc,uriAudio;
@@ -98,22 +87,16 @@ public class CreateMetingActivity extends AppCompatActivity {
         courses = intent.getStringExtra("courses");
         classId = intent.getStringExtra("classId");
 
-        dialog = new Dialog(this);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        spinCheck = findViewById(R.id.spinnerCheck);
-        labeled = findViewById(R.id.labeled);
         imgCreateCover = findViewById(R.id.img_view);
         spinnerMeting = findViewById(R.id.spinnerMeeting);
         edtInfo = findViewById(R.id.edtInfo);
         edtAttachDoc = findViewById(R.id.edtAttachDoc);
         edtAttachAudio = findViewById(R.id.edtAttachAudio);
-        btnCheck = findViewById(R.id.btnCheck);
-        btnUpdate = findViewById(R.id.btnUpdate);
         btnSave = findViewById(R.id.btnSave);
-        btnAddCover = findViewById(R.id.btnAddCover);
+        ImageButton btnAddCover = findViewById(R.id.btnAddCover);
 
         database = FirebaseDatabase.getInstance();
         storageReferenceCover = FirebaseStorage.getInstance().getReference("urlCover").child(getString(R.string.name_class)).child(classId);
@@ -146,49 +129,6 @@ public class CreateMetingActivity extends AppCompatActivity {
         AdView adView = findViewById(R.id.adViewAppBar);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
-
-        spinCheck.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                check = spinCheck.getSelectedItem().toString().trim();
-                if (check.equals(getString(R.string.select))){
-                    labeled.setVisibility(View.GONE);
-                    spinnerMeting.setEnabled(false);
-                    text();
-                    btnAddCover.setVisibility(View.INVISIBLE);
-                    btnSave.setVisibility(View.GONE);
-                    btnCheck.setVisibility(View.GONE);
-                    btnUpdate.setVisibility(View.GONE);
-                } else if (check.equals(getString(R.string.create_meeting))){
-                    labeled.setVisibility(View.VISIBLE);
-                    spinnerMeting.setEnabled(true);
-                    text();
-                    btnAddCover.setVisibility(View.VISIBLE);
-                    btnSave.setVisibility(View.VISIBLE);
-                    btnCheck.setVisibility(View.GONE);
-                    btnUpdate.setVisibility(View.GONE);
-                } else if (check.equals(getString(R.string.up_or_del))){
-                    labeled.setVisibility(View.GONE);
-                    spinnerMeting.setEnabled(true);
-                    text();
-                    btnAddCover.setVisibility(View.INVISIBLE);
-                    btnSave.setVisibility(View.GONE);
-                    btnCheck.setVisibility(View.VISIBLE);
-                    btnUpdate.setVisibility(View.GONE);
-                }
-            }
-
-            private void text() {
-                edtInfo.setText(null);
-                edtAttachDoc.setText(null);
-                edtAttachAudio.setText(null);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
         btnAddCover.setOnClickListener(view -> {
             if (ContextCompat.checkSelfPermission(CreateMetingActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
@@ -233,127 +173,6 @@ public class CreateMetingActivity extends AppCompatActivity {
                     alertDialog.show();
             } else {
                 Toast.makeText(this, getString(R.string.not_have_connection),Toast.LENGTH_SHORT ).show();
-            }
-        });
-
-        btnCheck.setOnClickListener(view -> {
-            if (haveConnection()){
-                spinMeting = spinnerMeting.getSelectedItem().toString().trim();
-                if (!validSpin()){
-                    return;
-                }
-                database.getReference(getString(R.string.name_class)).child(classId).child(getString(R.string.meting)).child(spinMeting).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()){
-                            dialog.setContentView(R.layout.dialog_update_delete);
-                            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-                            tvMeetingDialog = dialog.findViewById(R.id.tv_meetingDialog);
-                            imgCoverDialog = dialog.findViewById(R.id.img_viewDialog);
-                            tvInfoDialog = dialog.findViewById(R.id.tv_infoDialog);
-                            tvDocDialog = dialog.findViewById(R.id.tv_docDialog);
-                            tvAudioDialog = dialog.findViewById(R.id.tv_audioDialog);
-                            tvUpdateDialog = dialog.findViewById(R.id.tvUpdateDialog);
-                            tvDeleteDialog = dialog.findViewById(R.id.tvDeleteDialog);
-
-                            labeled.setVisibility(View.GONE);
-
-                            ModelMeting modelMeting = snapshot.getValue(ModelMeting.class);
-                            if (modelMeting !=null){
-                                if (modelMeting.getUrlCover().equals(getString(R.string.urlCover))){
-                                    Glide.with(CreateMetingActivity.this)
-                                            .load(R.mipmap.ic_launcher_round)
-                                            .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
-                                            .into(imgCoverDialog);
-                                } else {
-                                    Glide.with(CreateMetingActivity.this)
-                                            .load(modelMeting.getUrlCover())
-                                            .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
-                                            .into(imgCoverDialog);
-                                }
-
-                                tvMeetingDialog.setText(getString(R.string.metingDialog,modelMeting.getMeting()));
-                                tvInfoDialog.setText(modelMeting.getInformation());
-                                edtInfo.setText(modelMeting.getInformation());
-
-                                tvDocDialog.setText(modelMeting.getUrlDocument());
-                                edtAttachDoc.setText(modelMeting.getUrlDocument());
-
-                                tvAudioDialog.setText(modelMeting.getUrlAudio());
-                                edtAttachAudio.setText(modelMeting.getUrlAudio());
-
-                                tvUpdateDialog.setOnClickListener(viewUpdate -> {
-                                    if (modelMeting.getUrlCover().equals(getString(R.string.urlCover))){
-                                        Glide.with(CreateMetingActivity.this)
-                                                .load(R.mipmap.ic_launcher_round)
-                                                .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
-                                                .into(imgCreateCover);
-                                    } else {
-                                        Glide.with(CreateMetingActivity.this)
-                                                .load(modelMeting.getUrlCover())
-                                                .apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher_round))
-                                                .into(imgCreateCover);
-                                    }
-                                    labeled.setVisibility(View.VISIBLE);
-                                    btnAddCover.setVisibility(View.VISIBLE);
-                                    spinnerMeting.setEnabled(false);
-                                    btnCheck.setVisibility(View.GONE);
-                                    btnSave.setVisibility(View.GONE);
-                                    btnUpdate.setVisibility(View.VISIBLE);
-                                    dialog.dismiss();
-                                });
-
-                                tvDeleteDialog.setOnClickListener(view -> {
-                                    spinMeting = spinnerMeting.getSelectedItem().toString().trim();
-                                    if (haveConnection()){
-                                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CreateMetingActivity.this);
-                                        alertDialogBuilder
-                                                .setTitle(R.string.delete)
-                                                .setMessage(getString(R.string.valid_data_delete,spinMeting))
-                                                .setCancelable(false)
-                                                .setPositiveButton(R.string.yes, (dialog, id) -> {
-                                                    loadingProgress.startLoadingProgress();
-                                                    database.getReference(getString(R.string.name_class)).child(classId).child(getString(R.string.meting)).child(spinMeting).removeValue().addOnCompleteListener(CreateMetingActivity.this, task -> {
-                                                        if (task.isSuccessful()){
-                                                            loadingProgress.dismissLoadingProgress();
-                                                            backActivity();
-                                                            Toast.makeText(CreateMetingActivity.this, getString(R.string.delete_meting,spinMeting),Toast.LENGTH_SHORT).show();
-                                                        } else {
-                                                            loadingProgress.dismissLoadingProgress();
-                                                            Toast.makeText(CreateMetingActivity.this, getString(R.string.delete_field,spinMeting),Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                                })
-                                                .setNegativeButton(R.string.no, (dialog, id) -> dialog.cancel());
-                                        AlertDialog alertDialog = alertDialogBuilder.create();
-                                        Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(getDrawable(R.drawable.bg_costume));
-                                        alertDialog.show();
-                                    } else {
-                                        Toast.makeText(CreateMetingActivity.this, getString(R.string.not_have_connection),Toast.LENGTH_SHORT ).show();
-                                    }
-                                });
-                            }
-                        } else {
-                            Toast.makeText(CreateMetingActivity.this, getString(R.string.empty_meting,spinMeting),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-            } else {
-                Toast.makeText(this, getString(R.string.not_have_connection),Toast.LENGTH_SHORT ).show();
-            }
-            dialog.show();
-        });
-
-        btnUpdate.setOnClickListener(view -> {
-            if (haveConnection()){
-                editMeting(user,userId,classId,database);
             }
         });
     }

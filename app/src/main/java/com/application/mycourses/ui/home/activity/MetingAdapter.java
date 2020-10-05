@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,7 +81,7 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
         final FirebaseDatabase database;
         final ImageView imageView;
         final TextView tvTitle, tvInfo;
-        final ImageButton btnDoc,btnDelDoc;
+        final ImageButton imgBtnSettings,btnDoc,btnDelDoc;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             auth = FirebaseAuth.getInstance();
@@ -89,6 +90,7 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
             imageView = itemView.findViewById(R.id.img_view_meting);
             tvTitle = itemView.findViewById(R.id.tv_item_titleMeting);
             tvInfo = itemView.findViewById(R.id.tv_item_informationMeting);
+            imgBtnSettings = itemView.findViewById(R.id.imgBtnSettings);
             btnDoc = itemView.findViewById(R.id.btnDownloadDoc);
             btnDelDoc = itemView.findViewById(R.id.btnDeleteDoc);
         }
@@ -115,7 +117,7 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
             final File file = new File(itemView.getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), modelMeting.getIdMeting());
 
             if (file.exists()){
-                btnDoc.setVisibility(View.INVISIBLE);
+                btnDoc.setVisibility(View.GONE);
                 btnDelDoc.setVisibility(View.VISIBLE);
             }else {
                 btnDoc.setVisibility(View.VISIBLE);
@@ -136,10 +138,39 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
                 }
             });
 
+            imgBtnSettings.setOnClickListener(view -> {
+                PopupMenu popup = new PopupMenu(metingContext,view);
+                popup.setOnMenuItemClickListener(menuItem -> {
+                    switch (menuItem.getItemId()) {
+                        case R.id.action_edit:
+                            editIdMeting(modelMeting,user);
+                            return true;
+                        case R.id.action_delete:
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(metingContext);
+                            alertDialogBuilder
+                                    .setTitle(metingContext.getString(R.string.delete))
+                                    .setMessage(metingContext.getString(R.string.delete_your_class,modelMeting.getMeting()))
+                                    .setCancelable(false)
+                                    .setPositiveButton(metingContext.getString(R.string.yes), (dialog, id) -> {
+                                        deleteIdMeting(loadingProgress,modelMeting,database,user);
+                                    })
+                                    .setNegativeButton(R.string.no, (dialog, id) -> dialog.cancel());
+                            AlertDialog alertDialog = alertDialogBuilder.create();
+                            Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(metingContext.getDrawable(R.drawable.bg_costume));
+                            alertDialog.show();
+                            return true;
+                        default:
+                            return false;
+                    }
+                });
+                popup.inflate(R.menu.meeting_items);
+                popup.show();
+            });
+
             btnDoc.setOnClickListener(view -> {
-                Toast.makeText(metingContext, R.string.download_doc,Toast.LENGTH_SHORT).show();
-                btnDoc.setVisibility(View.INVISIBLE);
+                btnDoc.setVisibility(View.GONE);
                 if (haveConnection()){
+                    Toast.makeText(metingContext, R.string.download_doc,Toast.LENGTH_SHORT).show();
                     if (ContextCompat.checkSelfPermission(metingContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
                         downloadDoc(metingContext,modelMeting,httpsReference,file,loadingProgress);
                     }else {
@@ -161,7 +192,7 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
                             .setCancelable(false)
                             .setPositiveButton(R.string.yes, (dialog, id) -> {
                                 file.delete();
-                                btnDelDoc.setVisibility(View.INVISIBLE);
+                                btnDelDoc.setVisibility(View.GONE);
                                 btnDoc.setVisibility(View.VISIBLE);
                             })
                             .setNegativeButton(R.string.no, (dialog, id) -> dialog.cancel());
@@ -172,10 +203,19 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
             });
         }
 
+        private void editIdMeting(ModelMeting modelMeting, FirebaseUser user) {
+
+        }
+
+
+        private void deleteIdMeting(LoadingProgress loadingProgress, ModelMeting modelMeting, FirebaseDatabase database, FirebaseUser user) {
+
+        }
+
         private void downloadDoc(Context metingContext, ModelMeting modelMeting, StorageReference httpsReference, File file, LoadingProgress loadingProgress) {
             loadingProgress.startLoadingProgress();
             httpsReference.getFile(file).addOnSuccessListener(taskSnapshot -> {
-                btnDoc.setVisibility(View.INVISIBLE);
+                btnDoc.setVisibility(View.GONE);
                 loadingProgress.dismissLoadingProgress();
             }).addOnCompleteListener(task -> {
                 if (task.isComplete()){

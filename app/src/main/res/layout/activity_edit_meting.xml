@@ -68,17 +68,10 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
+                        android:id="@+id/tv_meeting"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/meting"
-                        android:textSize="14sp" />
-
-                    <Spinner
-                        android:id="@+id/spinnerMeeting"
-                        style="?attr/borderlessButtonStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:entries="@array/spinMeeting"
+                        tools:text="@string/meting"
                         android:padding="8dp"
                         android:textAlignment="center" />
                 </LinearLayout>
@@ -96,12 +89,6 @@
                 android:padding="@dimen/activity_horizontal_padding"
                 tools:ignore="UselessParent">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/info"
-                    android:textSize="14sp" />
-
                 <EditText
                     android:id="@+id/edtInfo"
                     android:layout_width="match_parent"
@@ -114,13 +101,6 @@
                     android:inputType="text"
                     android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/tvAttachDoc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/upload_document_file"
-                    android:textSize="14sp" />
-
                 <EditText
                     android:id="@+id/edtAttachDoc"
                     android:layout_width="match_parent"
@@ -131,13 +111,6 @@
                     android:focusableInTouchMode="true"
                     android:hint="@string/pdf"
                     android:inputType="text"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/tvAttachAudio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/upload_audio_file"
                     android:textSize="14sp" />
 
                 <EditText

@@ -21,6 +21,7 @@ import com.application.mycourses.R;
 import com.application.mycourses.model.ModelHome;
 import com.application.mycourses.ui.home.activity.MetingActivity;
 import com.application.mycourses.ui.main.edit.EditCoursesActivity;
+import com.application.mycourses.ui.utils.LoadingProgress;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -109,6 +110,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
         @SuppressLint("UseCompatLoadingForDrawables")
         public void bind(Context contextHome, ModelHome modelHome, HomeFragmentCallback callback) {
+            LoadingProgress loadingProgress = new LoadingProgress((Activity) contextHome);
             if (modelHome.getUrlCover().equals("urlCover")){
                 Glide.with(contextHome)
                         .load(R.mipmap.ic_launcher_round)
@@ -142,7 +144,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                                     .setMessage(contextHome.getString(R.string.delete_your_class,modelHome.getCourses()))
                                     .setCancelable(false)
                                     .setPositiveButton(contextHome.getString(R.string.yes), (dialog, id) -> {
-                                        deleteIdClass(modelHome,database,firebaseUser);
+                                        deleteIdClass(loadingProgress,modelHome,database,firebaseUser);
                                     })
                                     .setNegativeButton(R.string.no, (dialog, id) -> dialog.cancel());
                             AlertDialog alertDialog = alertDialogBuilder.create();
@@ -197,11 +199,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 activity.finish();
             }
         }
-        private void deleteIdClass(ModelHome modelHome, FirebaseDatabase database, FirebaseUser firebaseUser) {
+        private void deleteIdClass(LoadingProgress loadingProgress, ModelHome modelHome, FirebaseDatabase database, FirebaseUser firebaseUser) {
             String userId = firebaseUser.getUid();
             if (userId.equals(modelHome.getUserId())){
+                loadingProgress.startLoadingProgress();
                 database.getReference(contextHome.getString(R.string.name_class)).child(modelHome.getClassId()).removeValue().addOnCompleteListener(task -> {
                     if (task.isSuccessful()){
+                        loadingProgress.dismissLoadingProgress();
                         Intent intent = new Intent(contextHome, MainNavActivity.class);
                         Toast.makeText(contextHome,contextHome.getString(R.string.delete_class),Toast.LENGTH_SHORT).show();
                         contextHome.startActivity(intent);
@@ -209,12 +213,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                         activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
                         activity.finish();
                     } else {
+                        loadingProgress.dismissLoadingProgress();
                         Toast.makeText(contextHome,contextHome.getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
+                loadingProgress.startLoadingProgress();
                 database.getReference(contextHome.getString(R.string.name_class)).child(modelHome.getClassId()).child(contextHome.getString(R.string.name_class_member)).child(userId).removeValue().addOnCompleteListener(task -> {
                     if (task.isSuccessful()){
+                        loadingProgress.dismissLoadingProgress();
                         Intent intent = new Intent(contextHome, MainNavActivity.class);
                         Toast.makeText(contextHome,contextHome.getString(R.string.delete_and_left_class),Toast.LENGTH_SHORT).show();
                         contextHome.startActivity(intent);
@@ -222,6 +229,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                         activity.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
                         activity.finish();
                     } else {
+                        loadingProgress.dismissLoadingProgress();
                         Toast.makeText(contextHome,contextHome.getString(R.string.delete_class_failed),Toast.LENGTH_SHORT).show();
                     }
                 });
