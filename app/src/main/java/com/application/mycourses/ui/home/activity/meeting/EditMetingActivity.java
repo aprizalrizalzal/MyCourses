@@ -137,11 +137,11 @@ public class EditMetingActivity extends AppCompatActivity {
         TextView appBar = findViewById(R.id.tvAppBar);
         appBar.setText(getString(R.string.metingView,courses,meting));
 
-        MobileAds.initialize(this, initializationStatus -> {
+        /*MobileAds.initialize(this, initializationStatus -> {
         });
         AdView adView = findViewById(R.id.adViewAppBar);
         AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        adView.loadAd(adRequest);*/
 
         btnAddCover.setOnClickListener(view -> {
             if (ContextCompat.checkSelfPermission(EditMetingActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){

@@ -119,7 +119,7 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
             final File file = new File(itemView.getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), modelMeting.getIdMeting());
 
             if (file.exists()){
-                btnDoc.setVisibility(View.GONE);
+                btnDoc.setVisibility(View.INVISIBLE);
                 btnDelDoc.setVisibility(View.VISIBLE);
             }else {
                 btnDoc.setVisibility(View.VISIBLE);
@@ -193,7 +193,7 @@ public class MetingAdapter extends RecyclerView.Adapter<MetingAdapter.ViewHolder
             });
 
             btnDoc.setOnClickListener(view -> {
-                btnDoc.setVisibility(View.GONE);
+                btnDoc.setVisibility(View.INVISIBLE);
                 if (haveConnection()){
                     Toast.makeText(metingContext, R.string.download_doc,Toast.LENGTH_SHORT).show();
                     if (ContextCompat.checkSelfPermission(metingContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){

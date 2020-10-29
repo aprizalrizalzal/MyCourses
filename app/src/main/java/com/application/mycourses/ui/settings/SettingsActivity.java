@@ -55,12 +55,11 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
 
-        MobileAds.initialize(this, initializationStatus -> {
+        /*MobileAds.initialize(this, initializationStatus -> {
         });
-
         AdView adViewSettings = findViewById(R.id.adViewAppBar);
         AdRequest adRequest = new AdRequest.Builder().build();
-        adViewSettings.loadAd(adRequest);
+        adViewSettings.loadAd(adRequest);*/
 
         getSupportFragmentManager()
                 .beginTransaction()

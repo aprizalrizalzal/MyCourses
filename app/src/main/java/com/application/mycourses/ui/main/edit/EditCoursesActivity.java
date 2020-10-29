@@ -110,11 +110,11 @@ public class EditCoursesActivity extends AppCompatActivity {
             readItems(urlCover,university,faculty,study,semester,courses);
         }
 
-        MobileAds.initialize(this, initializationStatus -> {
+        /*MobileAds.initialize(this, initializationStatus -> {
         });
         AdView adView = findViewById(R.id.adViewAppBar);
         AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        adView.loadAd(adRequest);*/
 
         loadingProgress= new LoadingProgress(this);
 

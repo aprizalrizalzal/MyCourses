@@ -40,7 +40,7 @@
         tools:ignore="EllipsizeMaxLines"
         android:textAlignment="center"/>
     </androidx.appcompat.widget.Toolbar>
-
+    <!--
     <com.google.android.gms.ads.AdView
         android:id="@+id/adViewAppBar"
         android:layout_width="wrap_content"
@@ -48,4 +48,5 @@
         android:layout_gravity="center"
         app:adSize="BANNER"
         app:adUnitId="@string/your_ad_mod_id"/>
+        -->
 </com.google.android.material.appbar.AppBarLayout>

@@ -124,11 +124,11 @@ public class CreateMetingActivity extends AppCompatActivity {
         TextView appBar = findViewById(R.id.tvAppBar);
         appBar.setText(courses);
 
-        MobileAds.initialize(this, initializationStatus -> {
+        /*MobileAds.initialize(this, initializationStatus -> {
         });
         AdView adView = findViewById(R.id.adViewAppBar);
         AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        adView.loadAd(adRequest);*/
 
         btnAddCover.setOnClickListener(view -> {
             if (ContextCompat.checkSelfPermission(CreateMetingActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){

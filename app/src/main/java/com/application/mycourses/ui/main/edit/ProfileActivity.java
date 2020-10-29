@@ -121,11 +121,11 @@ public class ProfileActivity extends AppCompatActivity {
             run.setSelected(true);
         }
 
-        MobileAds.initialize(this, initializationStatus -> {
+        /*MobileAds.initialize(this, initializationStatus -> {
         });
         AdView adView = findViewById(R.id.adViewAppBar);
         AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        adView.loadAd(adRequest);*/
 
         readProfile(user,firestore);
 

@@ -24,6 +24,7 @@ import com.application.mycourses.MainNavActivity;
 import com.application.mycourses.R;
 import com.application.mycourses.model.ModelMeting;
 import com.application.mycourses.ui.home.activity.meeting.CreateMetingActivity;
+import com.application.mycourses.ui.home.activity.meeting.MemberClassActivity;
 import com.application.mycourses.ui.utils.LoadingProgress;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -79,11 +80,11 @@ public class MetingActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        MobileAds.initialize(this, initializationStatus -> {
+        /*MobileAds.initialize(this, initializationStatus -> {
         });
         AdView adView = findViewById(R.id.adViewAppBar);
         AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        adView.loadAd(adRequest);*/
 
         CircleImageView imgAppBar = findViewById(R.id.imgAppBar);
         if (urlCover != null) {
@@ -174,7 +175,13 @@ public class MetingActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main_meeting, menu);
         MenuItem itemMember = menu.findItem(R.id.action_class_members);
         itemMember.setOnMenuItemClickListener(menuItem -> {
-
+            Intent intentMember = new Intent(MetingActivity.this, MemberClassActivity.class);
+            intentMember.putExtra("urlCover",urlCover);
+            intentMember.putExtra("courses",courses);
+            intentMember.putExtra("classId",classId);
+            startActivity(intentMember);
+            overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+            finish();
            return true;
         });
         MenuItem itemLeave = menu.findItem(R.id.action_leave_class);
@@ -216,6 +223,5 @@ public class MetingActivity extends AppCompatActivity {
         startActivity(new Intent(MetingActivity.this, MainNavActivity.class));
         overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
         finish();
-
     }
 }

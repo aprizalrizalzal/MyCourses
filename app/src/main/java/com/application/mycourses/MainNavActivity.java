@@ -80,11 +80,11 @@ public class MainNavActivity extends AppCompatActivity implements NavigationView
         user = auth.getCurrentUser();
         firestore = FirebaseFirestore.getInstance();
 
-        MobileAds.initialize(this, initializationStatus -> {
+        /*MobileAds.initialize(this, initializationStatus -> {
         });
         AdView adView = findViewById(R.id.adViewAppBarMain);
         AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        adView.loadAd(adRequest);*/
 
         fab = findViewById(R.id.fab);
         imgBtnCreate = findViewById(R.id.fabCreate);

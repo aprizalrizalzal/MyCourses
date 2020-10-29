@@ -77,11 +77,11 @@ public class CreateCoursesActivity extends AppCompatActivity {
         edtSem = findViewById(R.id.edtSemester);
         edtCour = findViewById(R.id.edtCourses);
 
-        MobileAds.initialize(this, initializationStatus -> {
+        /*MobileAds.initialize(this, initializationStatus -> {
         });
         AdView adView = findViewById(R.id.adViewAppBar);
         AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        adView.loadAd(adRequest);*/
 
         loadingProgress= new LoadingProgress(this);
 
