@@ -1,5 +1,6 @@
 package com.application.mycourses.ui.home.activity.meeting;
 
+<<<<<<< HEAD
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,10 +44,18 @@ public class MemberClassActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser user;
 
+=======
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+
+public class MemberClassActivity extends AppCompatActivity {
+
+>>>>>>> origin/master
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_class);
+<<<<<<< HEAD
 
         Intent intent = getIntent();
         classId = intent.getStringExtra("classId");
@@ -136,5 +145,7 @@ public class MemberClassActivity extends AppCompatActivity {
         startActivity(intentMember);
         overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
         finish();
+=======
+>>>>>>> origin/master
     }
 }

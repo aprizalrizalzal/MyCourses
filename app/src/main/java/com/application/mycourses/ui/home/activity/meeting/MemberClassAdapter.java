@@ -1,5 +1,6 @@
 package com.application.mycourses.ui.home.activity.meeting;
 
+<<<<<<< HEAD
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,4 +56,7 @@ public class MemberClassAdapter extends RecyclerView.Adapter<MemberClassAdapter.
 
         }
     }
+=======
+public class MemberClassAdapter {
+>>>>>>> origin/master
 }
